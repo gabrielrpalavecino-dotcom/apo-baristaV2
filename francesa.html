@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prensa Francesa | Coffee Brew Lab</title>
+
+    <link rel="stylesheet" href="app.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <a href="index.html">
+            ← Inicio
+        </a>
+
+        <h1>🇫🇷 Prensa Francesa</h1>
+
+    </header>
+
+    <!-- KPI -->
+
+    <section class="kpis">
+
+        <div class="kpi">
+            <h2 id="kpiPreparaciones">0</h2>
+            <p>Preparaciones</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiCafe">0g</h2>
+            <p>Café Medio</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiAgua">0ml</h2>
+            <p>Agua Media</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiTiempo">0:00</h2>
+            <p>Tiempo Medio</p>
+        </div>
+
+    </section>
+
+    <!-- RECETA -->
+
+    <section class="card">
+
+        <h2>Receta</h2>
+
+        <select id="cafeSeleccionado">
+
+            <option value="">
+                Seleccionar Café
+            </option>
+
+        </select>
+
+        <input type="number" id="cafe" value="30" placeholder="Café (g)">
+
+        <input type="number" id="agua" value="500" placeholder="Agua (ml)">
+
+        <input type="number" id="temperatura" value="94" placeholder="Temperatura">
+
+        <input type="number" id="ratio" value="16" placeholder="Ratio">
+
+    </section>
+
+    <!-- TEMPORIZADOR -->
+
+    <section class="card">
+
+        <h2>Temporizador</h2>
+
+        <div id="faseActual">
+
+            Preparado para iniciar
+
+        </div>
+
+        <div id="cronometro" class="cronometro">
+
+            04:00
+
+        </div>
+
+        <div class="progress">
+
+            <div id="progressBar" class="progress-bar">
+
+            </div>
+
+        </div>
+
+        <button onclick="iniciarFrancesa()">
+
+            ▶ Iniciar
+
+        </button>
+
+        <br><br>
+
+        <button onclick="detenerFrancesa()">
+
+            ■ Detener
+
+        </button>
+
+    </section>
+
+    <!-- GUÍA -->
+
+    <section class="card">
+
+        <h2>Guía de Preparación</h2>
+
+        <div id="timeline">
+
+            <p>☕ Añadir café molido grueso</p>
+
+            <p>💧 Añadir agua caliente</p>
+
+            <p>🔄 Remover suavemente (1:00)</p>
+
+            <p>🥄 Romper costra (4:00)</p>
+
+            <p>⬇️ Prensar</p>
+
+            <p>✅ Servir</p>
+
+        </div>
+
+    </section>
+
+    <!-- NOTAS -->
+
+    <section class="card">
+
+        <h2>Notas</h2>
+
+        <textarea id="notas" placeholder="Observaciones de la preparación...">
+</textarea>
+
+    </section>
+
+    <!-- GUARDAR -->
+
+    <section class="card">
+
+        <button onclick="guardarPreparacion()">
+
+            Guardar Preparación
+
+        </button>
+
+    </section>
+
+    <!-- GRAFICO -->
+
+    <section class="card">
+
+        <h2>📈 Consistencia</h2>
+
+        <canvas id="graficoFrancesa"></canvas>
+
+    </section>
+
+    <!-- HISTORIAL -->
+
+    <section class="card">
+
+        <h2>📋 Historial</h2>
+
+        <div id="historial"></div>
+
+    </section>
+
+    <script>
+
+        const preparaciones =
+            JSON.parse(
+                localStorage.getItem(
+                    "francesaPreparaciones"
+                )
+            ) || [];
+
+        let intervalo;
+        let inicio;
+        let chart;
+
+        if (
+            typeof cargarSelectCafes
+            === "function"
+        ) {
+
+            cargarSelectCafes(
+                "cafeSeleccionado"
+            );
+
+        }
+
+        function iniciarFrancesa() {
+
+            clearInterval(intervalo);
+
+            inicio = Date.now();
+
+            intervalo = setInterval(() => {
+
+                const segundos =
+
+                    Math.floor(
+                        (Date.now() - inicio) / 1000
+                    );
+
+                actualizarTiempo(
+                    segundos
+                );
+
+                actualizarFase(
+                    segundos
+                );
+
+            }, 1000);
+
+        }
+
+        function detenerFrancesa() {
+
+            clearInterval(
+                intervalo
+            );
+
+        }
+
+        function actualizarTiempo(segundos) {
+
+            const restante =
+                Math.max(
+                    240 - segundos,
+                    0
+                );
+
+            const min =
+                Math.floor(
+                    restante / 60
+                );
+
+            const seg =
+                restante % 60;
+
+            document
+                .getElementById(
+                    "cronometro"
+                )
+                .innerHTML =
+
+                String(min)
+                    .padStart(2, "0")
+
+                + ":"
+
+                +
+
+                String(seg)
+                    .padStart(2, "0");
+
+            const progreso =
+
+                Math.min(
+
+                    (segundos / 240) * 100,
+
+                    100
+
+                );
+
+            document
+                .getElementById(
+                    "progressBar"
+                )
+                .style.width =
+
+                progreso + "%";
+
+        }
+
+        function actualizarFase(segundos) {
+
+            const fase =
+                document
+                    .getElementById(
+                        "faseActual"
+                    );
+
+            if (segundos < 60) {
+
+                fase.innerHTML =
+                    "☕ Infusión";
+
+            }
+
+            else if (segundos < 180) {
+
+                fase.innerHTML =
+                    "⏳ Extrayendo";
+
+            }
+
+            else if (segundos < 240) {
+
+                fase.innerHTML =
+                    "🥄 Preparar rotura de costra";
+
+            }
+
+            else {
+
+                fase.innerHTML =
+                    "✅ Romper costra y prensar";
+
+                clearInterval(
+                    intervalo
+                );
+
+                alert(
+                    "✅ Tiempo alcanzado"
+                );
+
+            }
+
+        }
+
+        function guardarPreparacion() {
+
+            const registro = {
+
+                id: Date.now(),
+
+                fecha:
+                    new Date()
+                        .toLocaleString(),
+
+                cafe:
+                    document
+                        .getElementById(
+                            "cafeSeleccionado"
+                        ).value,
+
+                gramos:
+                    document
+                        .getElementById(
+                            "cafe"
+                        ).value,
+
+                agua:
+                    document
+                        .getElementById(
+                            "agua"
+                        ).value,
+
+                temperatura:
+                    document
+                        .getElementById(
+                            "temperatura"
+                        ).value,
+
+                ratio:
+                    document
+                        .getElementById(
+                            "ratio"
+                        ).value,
+
+                tiempo:
+                    document
+                        .getElementById(
+                            "cronometro"
+                        ).innerText,
+
+                notas:
+                    document
+                        .getElementById(
+                            "notas"
+                        ).value
+
+            };
+
+            preparaciones.push(
+                registro
+            );
+
+            localStorage.setItem(
+
+                "francesaPreparaciones",
+
+                JSON.stringify(
+                    preparaciones
+                )
+
+            );
+
+            renderHistorial();
+            actualizarKPIs();
+            actualizarGrafico();
+
+            alert(
+                "✅ Preparación guardada"
+            );
+
+        }
+
+        function renderHistorial() {
+
+            document
+                .getElementById(
+                    "historial"
+                )
+                .innerHTML =
+
+                [...preparaciones]
+
+                    .reverse()
+
+                    .map(p => `
+
+    <div class="registro">
+
+        <h3>
+        🇫🇷 ${p.cafe || "Sin Café"}
+        </h3>
+
+        <p>
+        ⚖️ ${p.gramos} g
+        </p>
+
+        <p>
+        💧 ${p.agua} ml
+        </p>
+
+        <p>
+        🌡️ ${p.temperatura}°C
+        </p>
+
+        <p>
+        📊 1:${p.ratio}
+        </p>
+
+        <p>
+        ⏱️ ${p.tiempo}
+        </p>
+
+        <p>
+        📝 ${p.notas || "-"}
+        </p>
+
+        <small>
+        ${p.fecha}
+        </small>
+
+    </div>
+
+    `).join("");
+
+        }
+
+        function actualizarKPIs() {
+
+            document
+                .getElementById(
+                    "kpiPreparaciones"
+                )
+                .innerText =
+                preparaciones.length;
+
+            if (
+                preparaciones.length === 0
+            ) return;
+
+            let cafe = 0;
+            let agua = 0;
+
+            preparaciones.forEach(p => {
+
+                cafe +=
+                    Number(p.gramos);
+
+                agua +=
+                    Number(p.agua);
+
+            });
+
+            document
+                .getElementById(
+                    "kpiCafe"
+                )
+                .innerText =
+
+                (
+                    cafe /
+                    preparaciones.length
+                ).toFixed(1) + "g";
+
+            document
+                .getElementById(
+                    "kpiAgua"
+                )
+                .innerText =
+
+                Math.round(
+                    agua /
+                    preparaciones.length
+                ) + "ml";
+
+            document
+                .getElementById(
+                    "kpiTiempo"
+                )
+                .innerText =
+                "04:00";
+
+        }
+
+        function actualizarGrafico() {
+
+            const datos =
+                preparaciones.map(
+                    () => 240
+                );
+
+            if (chart) {
+
+                chart.destroy();
+
+            }
+
+            chart =
+                new Chart(
+
+                    document
+                        .getElementById(
+                            "graficoFrancesa"
+                        ),
+
+                    {
+
+                        type: "line",
+
+                        data: {
+
+                            labels:
+                                datos.map(
+                                    (_, i) => "#" + (i + 1)
+                                ),
+
+                            datasets: [{
+
+                                label:
+                                    "Tiempo Ideal",
+
+                                data: datos,
+
+                                borderColor:
+                                    "#c58b45",
+
+                                fill: false,
+
+                                tension: .3
+
+                            }]
+
+                        }
+
+                    });
+
+        }
+
+        renderHistorial();
+        actualizarKPIs();
+        actualizarGrafico();
+
+    </script>
+
+</body>
+
+</html>

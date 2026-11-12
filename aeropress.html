@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AeroPress | Coffee Brew Lab</title>
+
+    <link rel="stylesheet" href="app.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <a href="index.html">
+            ← Inicio
+        </a>
+
+        <h1>🛢️ AeroPress</h1>
+
+    </header>
+
+    <section class="kpis">
+
+        <div class="kpi">
+            <h2 id="kpiTotal">0</h2>
+            <p>Preparaciones</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiCafe">0g</h2>
+            <p>Café Medio</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiAgua">0ml</h2>
+            <p>Agua Media</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiTiempo">0s</h2>
+            <p>Tiempo Medio</p>
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Receta</h2>
+
+        <select id="cafeSeleccionado">
+
+            <option value="">
+                Seleccionar Café
+            </option>
+
+        </select>
+
+        <select id="metodo">
+
+            <option value="Clasico">
+                Clásico
+            </option>
+
+            <option value="Invertido">
+                Invertido
+            </option>
+
+            <option value="WAC">
+                WAC Campeonato
+            </option>
+
+        </select>
+
+        <input type="number" id="cafe" value="18" placeholder="Café (g)">
+
+        <input type="number" id="agua" value="220" placeholder="Agua (ml)">
+
+        <input type="number" id="temperatura" value="92" placeholder="Temperatura °C">
+
+    </section>
+
+    <section class="card">
+
+        <h2>Estado de la Preparación</h2>
+
+        <div id="faseActual">
+
+            Preparado para comenzar
+
+        </div>
+
+        <div id="cronometro" class="cronometro">
+
+            00:00
+
+        </div>
+
+        <div class="progress">
+
+            <div id="progressBar" class="progress-bar">
+            </div>
+
+        </div>
+
+        <button onclick="iniciarAeropress()">
+
+            ▶ Iniciar
+
+        </button>
+
+        <br><br>
+
+        <button onclick="detenerAeropress()">
+
+            ■ Detener
+
+        </button>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Guía Paso a Paso</h2>
+
+        <div id="guia">
+
+            <p>0:00 💧 Añadir agua</p>
+
+            <p>0:30 🔄 Remover</p>
+
+            <p>1:00 🫖 Colocar émbolo</p>
+
+            <p>1:30 ⬇️ Comenzar presión</p>
+
+            <p>2:00 ✅ Finalizar</p>
+
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Notas</h2>
+
+        <textarea id="notas" placeholder="Observaciones de la preparación...">
+</textarea>
+
+    </section>
+
+    <section class="card">
+
+        <button onclick="guardarPreparacion()">
+            Guardar Preparación
+        </button>
+
+    </section>
+
+    <section class="card">
+
+        <h2>📈 Consistencia</h2>
+
+        <canvas id="graficoAeropress"></canvas>
+
+    </section>
+
+    <section class="card">
+
+        <h2>📋 Historial</h2>
+
+        <div id="historial"></div>
+
+    </section>
+
+    <script>
+
+        const preparaciones =
+            JSON.parse(
+                localStorage.getItem(
+                    "aeropressPreparaciones"
+                )
+            ) || [];
+
+        let inicio;
+        let intervalo;
+        let chart;
+
+        if (
+            typeof cargarSelectCafes === "function"
+        ) {
+
+            cargarSelectCafes(
+                "cafeSeleccionado"
+            );
+
+        }
+
+        function iniciarAeropress() {
+
+            clearInterval(intervalo);
+
+            inicio = Date.now();
+
+            intervalo = setInterval(() => {
+
+                const segundos =
+                    Math.floor(
+                        (Date.now() - inicio) / 1000
+                    );
+
+                actualizarTiempo(segundos);
+
+                actualizarFase(segundos);
+
+            }, 1000);
+
+        }
+
+        function detenerAeropress() {
+
+            clearInterval(intervalo);
+
+        }
+
+        function actualizarTiempo(segundos) {
+
+            const min =
+                Math.floor(segundos / 60);
+
+            const seg =
+                segundos % 60;
+
+            document
+                .getElementById(
+                    "cronometro"
+                )
+                .innerText =
+
+                String(min)
+                    .padStart(2, "0")
+                + ":" +
+                String(seg)
+                    .padStart(2, "0");
+
+            const progreso =
+                Math.min(
+                    (segundos / 120) * 100,
+                    100
+                );
+
+            document
+                .getElementById(
+                    "progressBar"
+                )
+                .style.width =
+                progreso + "%";
+
+        }
+
+        function actualizarFase(segundos) {
+
+            const fase =
+                document.getElementById(
+                    "faseActual"
+                );
+
+            if (segundos < 30) {
+
+                fase.innerHTML =
+                    "💧 Añadiendo agua";
+
+            }
+            else if (segundos < 60) {
+
+                fase.innerHTML =
+                    "🔄 Remover";
+
+            }
+            else if (segundos < 90) {
+
+                fase.innerHTML =
+                    "🫖 Colocar émbolo";
+
+            }
+            else if (segundos < 120) {
+
+                fase.innerHTML =
+                    "⬇️ Presionar";
+
+            }
+            else {
+
+                fase.innerHTML =
+                    "✅ Preparación completada";
+
+                clearInterval(intervalo);
+
+                alert(
+                    "✅ AeroPress finalizada"
+                );
+
+            }
+
+        }
+
+        function guardarPreparacion() {
+
+            const registro = {
+
+                id: Date.now(),
+
+                fecha:
+                    new Date()
+                        .toLocaleString(),
+
+                cafeNombre:
+                    document
+                        .getElementById(
+                            "cafeSeleccionado"
+                        ).value,
+
+                metodo:
+                    document
+                        .getElementById(
+                            "metodo"
+                        ).value,
+
+                cafe:
+                    document
+                        .getElementById(
+                            "cafe"
+                        ).value,
+
+                agua:
+                    document
+                        .getElementById(
+                            "agua"
+                        ).value,
+
+                temperatura:
+                    document
+                        .getElementById(
+                            "temperatura"
+                        ).value,
+
+                tiempo:
+                    document
+                        .getElementById(
+                            "cronometro"
+                        ).innerText,
+
+                notas:
+                    document
+                        .getElementById(
+                            "notas"
+                        ).value
+
+            };
+
+            preparaciones.push(
+                registro
+            );
+
+            localStorage.setItem(
+
+                "aeropressPreparaciones",
+
+                JSON.stringify(
+                    preparaciones
+                )
+
+            );
+
+            renderHistorial();
+            actualizarKPIs();
+            actualizarGrafico();
+
+            alert(
+                "✅ Preparación guardada"
+            );
+
+        }
+
+        function renderHistorial() {
+
+            document
+                .getElementById(
+                    "historial"
+                )
+                .innerHTML =
+
+                [...preparaciones]
+                    .reverse()
+                    .map(p => `
+
+    <div class="registro">
+
+        <h3>
+        🛢️ ${p.cafeNombre || "Sin Café"}
+        </h3>
+
+        <p>
+        Método:
+        ${p.metodo}
+        </p>
+
+        <p>
+        ⚖️ ${p.cafe} g
+        </p>
+
+        <p>
+        💧 ${p.agua} ml
+        </p>
+
+        <p>
+        🌡️ ${p.temperatura}°C
+        </p>
+
+        <p>
+        ⏱️ ${p.tiempo}
+        </p>
+
+        <p>
+        📝 ${p.notas || "-"}
+        </p>
+
+        <small>
+        ${p.fecha}
+        </small>
+
+    </div>
+
+    `).join("");
+
+        }
+
+        function actualizarKPIs() {
+
+            document
+                .getElementById(
+                    "kpiTotal"
+                )
+                .innerText =
+                preparaciones.length;
+
+            if (
+                preparaciones.length === 0
+            ) return;
+
+            let cafe = 0;
+            let agua = 0;
+            let tiempo = 0;
+
+            preparaciones.forEach(p => {
+
+                cafe +=
+                    Number(p.cafe);
+
+                agua +=
+                    Number(p.agua);
+
+                const t =
+                    p.tiempo.split(":");
+
+                tiempo +=
+
+                    Number(t[0]) * 60 +
+
+                    Number(t[1]);
+
+            });
+
+            document
+                .getElementById(
+                    "kpiCafe"
+                )
+                .innerText =
+
+                (
+                    cafe /
+                    preparaciones.length
+                ).toFixed(1)
+                + "g";
+
+            document
+                .getElementById(
+                    "kpiAgua"
+                )
+                .innerText =
+
+                Math.round(
+                    agua /
+                    preparaciones.length
+                ) + "ml";
+
+            document
+                .getElementById(
+                    "kpiTiempo"
+                )
+                .innerText =
+
+                Math.round(
+                    tiempo /
+                    preparaciones.length
+                ) + "s";
+
+        }
+
+        function actualizarGrafico() {
+
+            const datos =
+                preparaciones.map(p => {
+
+                    const t =
+                        p.tiempo.split(":");
+
+                    return (
+
+                        Number(t[0]) * 60 +
+
+                        Number(t[1])
+
+                    );
+
+                });
+
+            if (chart) {
+
+                chart.destroy();
+
+            }
+
+            chart =
+                new Chart(
+
+                    document
+                        .getElementById(
+                            "graficoAeropress"
+                        ),
+
+                    {
+
+                        type: "line",
+
+                        data: {
+
+                            labels:
+                                datos.map(
+                                    (_, i) => "#" + (i + 1)
+                                ),
+
+                            datasets: [{
+
+                                label:
+                                    "Tiempo AeroPress",
+
+                                data: datos,
+
+                                borderColor: "#c58b45",
+
+                                tension: .3,
+
+                                fill: false
+
+                            }]
+
+                        }
+
+                    });
+
+        }
+
+        renderHistorial();
+        actualizarKPIs();
+        actualizarGrafico();
+
+    </script>
+
+</body>
+
+</html>
