@@ -1,55 +1,534 @@
-<div class="card">
+<!DOCTYPE html>
+<html lang="es">
 
-    <h2>
-        🌱 Colombia Huila
-    </h2>
+<head>
 
-    <p>
-        🌎 Colombia
-    </p>
+    <meta charset="UTF-8">
 
-    <p>
-        ⛰ 1900 msnm
-    </p>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <p>
-        ⚙️ Lavado
-    </p>
+    <title>🌱 Cafés | Coffee Brew Lab</title>
 
-    <p>
-        🔥 Medio
-    </p>
+    <link rel="stylesheet" href="app.css">
 
-    <div class="chips">
+</head>
 
-        <span>
-            🍫 Chocolate
-        </span>
+<body>
 
-        <span>
-            🥜 Avellana
-        </span>
+    <header class="topbar">
 
-        <span>
-            🍯 Caramelo
-        </span>
+        <a href="index.html">
+            ← Inicio
+        </a>
+
+        <h1>🌱 Cafés</h1>
+
+    </header>
+
+    <!-- KPI -->
+
+    <section class="kpis">
+
+        <div class="kpi">
+            <h2 id="kpiCafes">0</h2>
+            <p>Cafés</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiOrigenes">0</h2>
+            <p>Orígenes</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiFavoritos">0</h2>
+            <p>Favoritos</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiProcesos">0</h2>
+            <p>Procesos</p>
+        </div>
+
+    </section>
+
+    <!-- FORMULARIO -->
+
+    <section class="card">
+
+        <h2 id="tituloForm">
+            Nuevo Café
+        </h2>
+
+        <input type="text" id="nombre" placeholder="Nombre del café">
+
+        <input type="text" id="origen" placeholder="País de origen">
+
+        <input type="text" id="productor" placeholder="Productor">
+
+        <input type="text" id="finca" placeholder="Finca">
+
+        <input type="number" id="altitud" placeholder="Altitud msnm">
+
+        <select id="proceso">
+
+            <option>Lavado</option>
+            <option>Natural</option>
+            <option>Honey</option>
+            <option>Anaeróbico</option>
+            <option>Experimental</option>
+
+        </select>
+
+        <select id="tueste">
+
+            <option>Claro</option>
+            <option>Medio</option>
+            <option>Medio Oscuro</option>
+            <option>Oscuro</option>
+
+        </select>
+
+        <label>Fecha de Tueste</label>
+
+        <input type="date" id="fechaTueste">
+
+        <label>Fecha de Apertura</label>
+
+        <input type="date" id="fechaApertura">
+
+        <h3>Notas Sensoriales</h3>
+
+        <input type="text" id="nota1" placeholder="🍫 Nota principal">
+
+        <input type="text" id="nota2" placeholder="🥜 Nota secundaria">
+
+        <input type="text" id="nota3" placeholder="🍯 Retrogusto">
+
+        <label>
+
+            <input type="checkbox" id="favorito">
+
+            Favorito
+
+        </label>
+
+        <br><br>
+
+        <button id="btnGuardar" onclick="guardarCafe()">
+
+            Guardar Café
+
+        </button>
+
+    </section>
+
+    <!-- BUSCADOR -->
+
+    <section class="card">
+
+        <h2>Buscar</h2>
+
+        <input type="text" id="buscar" placeholder="Buscar café..." onkeyup="renderCafes()">
+
+    </section>
+
+    <!-- FAVORITOS -->
+
+    <section class="card">
+
+        <h2>⭐ Favoritos</h2>
+
+        <div id="listaFavoritos">
+
+            Sin favoritos
+
+        </div>
+
+    </section>
+
+    <!-- LISTA -->
+
+    <section class="card">
+
+        <h2>Biblioteca de Cafés</h2>
+
+        <div id="listaCafes">
+        </div>
+
+    </section>
+
+    <script>
+
+        let cafeEditando = null;
+
+        const cafes =
+            JSON.parse(
+                localStorage.getItem("cafes")
+            ) || [];
+
+        function guardarCafe() {
+
+            const cafe = {
+
+                id:
+                    cafeEditando || Date.now(),
+
+                nombre:
+                    document.getElementById("nombre").value,
+
+                origen:
+                    document.getElementById("origen").value,
+
+                productor:
+                    document.getElementById("productor").value,
+
+                finca:
+                    document.getElementById("finca").value,
+
+                altitud:
+                    document.getElementById("altitud").value,
+
+                proceso:
+                    document.getElementById("proceso").value,
+
+                tueste:
+                    document.getElementById("tueste").value,
+
+                fechaTueste:
+                    document.getElementById("fechaTueste").value,
+
+                fechaApertura:
+                    document.getElementById("fechaApertura").value,
+
+                nota1:
+                    document.getElementById("nota1").value,
+
+                nota2:
+                    document.getElementById("nota2").value,
+
+                nota3:
+                    document.getElementById("nota3").value,
+
+                favorito:
+                    document.getElementById("favorito").checked
+
+            };
+
+            if (cafeEditando) {
+
+                const index =
+                    cafes.findIndex(
+                        c => c.id === cafeEditando
+                    );
+
+                cafes[index] = cafe;
+
+                cafeEditando = null;
+
+                document.getElementById(
+                    "tituloForm"
+                ).innerHTML =
+                    "Nuevo Café";
+
+                document.getElementById(
+                    "btnGuardar"
+                ).innerHTML =
+                    "Guardar Café";
+
+            }
+
+            else {
+
+                cafes.push(cafe);
+
+            }
+
+            localStorage.setItem(
+                "cafes",
+                JSON.stringify(cafes)
+            );
+
+            limpiarFormulario();
+
+            renderCafes();
+
+            actualizarKPIs();
+
+        }
+
+        function editarCafe(id) {
+
+            const cafe =
+                cafes.find(
+                    c => c.id === id
+                );
+
+            if (!cafe) return;
+
+            cafeEditando = id;
+
+            document.getElementById("nombre").value =
+                cafe.nombre;
+
+            document.getElementById("origen").value =
+                cafe.origen;
+
+            document.getElementById("productor").value =
+                cafe.productor;
+
+            document.getElementById("finca").value =
+                cafe.finca;
+
+            document.getElementById("altitud").value =
+                cafe.altitud;
+
+            document.getElementById("proceso").value =
+                cafe.proceso;
+
+            document.getElementById("tueste").value =
+                cafe.tueste;
+
+            document.getElementById("fechaTueste").value =
+                cafe.fechaTueste;
+
+            document.getElementById("fechaApertura").value =
+                cafe.fechaApertura;
+
+            document.getElementById("nota1").value =
+                cafe.nota1;
+
+            document.getElementById("nota2").value =
+                cafe.nota2;
+
+            document.getElementById("nota3").value =
+                cafe.nota3;
+
+            document.getElementById("favorito").checked =
+                cafe.favorito;
+
+            document.getElementById(
+                "tituloForm"
+            ).innerHTML =
+                "✏️ Editar Café";
+
+            document.getElementById(
+                "btnGuardar"
+            ).innerHTML =
+                "Actualizar Café";
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+        }
+
+        function eliminarCafe(id) {
+
+            if (
+                !confirm(
+                    "¿Eliminar este café?"
+                )
+            ) return;
+
+            const nuevos =
+                cafes.filter(
+                    c => c.id !== id
+                );
+
+            localStorage.setItem(
+                "cafes",
+                JSON.stringify(nuevos)
+            );
+
+            location.reload();
+
+        }
+
+        function limpiarFormulario() {
+
+            document.getElementById("nombre").value = "";
+            document.getElementById("origen").value = "";
+            document.getElementById("productor").value = "";
+            document.getElementById("finca").value = "";
+            document.getElementById("altitud").value = "";
+            document.getElementById("fechaTueste").value = "";
+            document.getElementById("fechaApertura").value = "";
+            document.getElementById("nota1").value = "";
+            document.getElementById("nota2").value = "";
+            document.getElementById("nota3").value = "";
+            document.getElementById("favorito").checked = false;
+
+        }
+
+        function renderCafes() {
+
+            const texto =
+
+                document
+                    .getElementById("buscar")
+                    .value
+                    .toLowerCase();
+
+            const lista =
+
+                cafes.filter(c => {
+
+                    return (
+
+                        c.nombre.toLowerCase()
+                            .includes(texto)
+
+                        ||
+
+                        c.origen.toLowerCase()
+                            .includes(texto)
+
+                    );
+
+                });
+
+            document
+                .getElementById(
+                    "listaCafes"
+                ).innerHTML =
+
+                lista.map(c => `
+
+    <div class="registro">
+
+        <h3>
+
+        🌱 ${c.nombre}
+
+        </h3>
+
+        <p>🌍 ${c.origen}</p>
+
+        <p>👨‍🌾 ${c.productor}</p>
+
+        <p>🏡 ${c.finca}</p>
+
+        <p>⛰ ${c.altitud} msnm</p>
+
+        <p>⚙️ ${c.proceso}</p>
+
+        <p>🔥 ${c.tueste}</p>
+
+        <p>📅 Tueste: ${c.fechaTueste || "-"}</p>
+
+        <p>📂 Apertura: ${c.fechaApertura || "-"}</p>
+
+        <p>
+
+        👃
+
+        ${c.nota1 || ""}
+
+        ${c.nota2 || ""}
+
+        ${c.nota3 || ""}
+
+        </p>
+
+        <br>
+
+        <button
+        onclick="editarCafe(${c.id})">
+
+        ✏️ Editar
+
+        </button>
+
+        <br><br>
+
+        <button
+        onclick="eliminarCafe(${c.id})">
+
+        🗑️ Eliminar
+
+        </button>
 
     </div>
 
-    <button>
-        ☕ Espresso
-    </button>
+    `).join("");
 
-    <button>
-        ☕ V60
-    </button>
+            renderFavoritos();
 
-    <button>
-        🇫🇷 Francesa
-    </button>
+        }
 
-    <button>
-        🇮🇹 Moka
-    </button>
+        function renderFavoritos() {
 
-</div>
+            const favoritos =
+                cafes.filter(
+                    c => c.favorito
+                );
+
+            document
+                .getElementById(
+                    "listaFavoritos"
+                ).innerHTML =
+
+                favoritos.length
+
+                    ?
+
+                    favoritos.map(c => `
+
+    <div class="registro">
+
+    ⭐ <strong>${c.nombre}</strong>
+
+    (${c.origen})
+
+    </div>
+
+    `).join("")
+
+                    :
+
+                    "Sin favoritos";
+
+        }
+
+        function actualizarKPIs() {
+
+            document.getElementById(
+                "kpiCafes"
+            ).innerHTML =
+                cafes.length;
+
+            document.getElementById(
+                "kpiOrigenes"
+            ).innerHTML =
+
+                new Set(
+                    cafes.map(c => c.origen)
+                ).size;
+
+            document.getElementById(
+                "kpiFavoritos"
+            ).innerHTML =
+
+                cafes.filter(
+                    c => c.favorito
+                ).length;
+
+            document.getElementById(
+                "kpiProcesos"
+            ).innerHTML =
+
+                new Set(
+                    cafes.map(c => c.proceso)
+                ).size;
+
+        }
+
+        renderCafes();
+        actualizarKPIs();
+
+    </script>
+
+</body>
+
+</html>
