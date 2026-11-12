@@ -1,3 +1,4 @@
+ç
 <!DOCTYPE html>
 <html lang="es">
 
@@ -27,45 +28,29 @@
 
     </header>
 
-    <!-- KPI -->
-
     <section class="kpis">
 
         <div class="kpi">
-
             <h2 id="kpiTotal">0</h2>
-
             <p>Preparaciones</p>
-
         </div>
 
         <div class="kpi">
-
             <h2 id="kpiTemp">0°C</h2>
-
             <p>Temp. Media</p>
-
         </div>
 
         <div class="kpi">
-
             <h2 id="kpiLeche">0ml</h2>
-
             <p>Leche Media</p>
-
         </div>
 
         <div class="kpi">
-
             <h2 id="kpiFavorita">-</h2>
-
             <p>Más Popular</p>
-
         </div>
 
     </section>
-
-    <!-- FORMULARIO -->
 
     <section class="card">
 
@@ -73,41 +58,18 @@
 
         <select id="tipoBebida" onchange="actualizarReceta()">
 
-            <option>
-                Matcha Tradicional
-            </option>
-
-            <option>
-                Matcha Latte
-            </option>
-
-            <option>
-                Iced Matcha Latte
-            </option>
-
-            <option>
-                Matcha Fresa
-            </option>
-
-            <option>
-                Matcha Chocolate
-            </option>
-
-            <option>
-                Chai Latte
-            </option>
-
-            <option>
-                Iced Chai Latte
-            </option>
-
-            <option>
-                Dirty Chai
-            </option>
+            <option>Matcha Tradicional</option>
+            <option>Matcha Latte</option>
+            <option>Iced Matcha Latte</option>
+            <option>Matcha Fresa</option>
+            <option>Matcha Chocolate</option>
+            <option>Chai Latte</option>
+            <option>Iced Chai Latte</option>
+            <option>Dirty Chai</option>
 
         </select>
 
-        <input type="number" id="base" placeholder="Base (g/ml)">
+        <input type="number" id="base" placeholder="Base">
 
         <input type="number" id="agua" placeholder="Agua (ml)">
 
@@ -119,7 +81,17 @@
 
     </section>
 
-    <!-- DIAGNOSTICO -->
+    <section class="card">
+
+        <h2>📋 Ingredientes y Preparación</h2>
+
+        <div id="infoReceta">
+
+            Selecciona una bebida
+
+        </div>
+
+    </section>
 
     <section class="card">
 
@@ -136,44 +108,24 @@ text-align:center;">
 
     </section>
 
-    <!-- RECETA -->
-
-    <section class="card">
-
-        <h2>Receta Recomendada</h2>
-
-        <div id="infoReceta">
-
-            Selecciona una bebida
-
-        </div>
-
-    </section>
-
-    <!-- NOTAS -->
-
     <section class="card">
 
         <h2>Notas</h2>
 
-        <textarea id="notas" placeholder="Dulce, especiado, vegetal, cremoso...">
+        <textarea id="notas" placeholder="Especias, dulzor, textura, sabores...">
 </textarea>
 
     </section>
-
-    <!-- GUARDAR -->
 
     <section class="card">
 
         <button onclick="guardarBebida()">
 
-            💾 Guardar
+            💾 Guardar Preparación
 
         </button>
 
     </section>
-
-    <!-- GRAFICO -->
 
     <section class="card">
 
@@ -183,14 +135,11 @@ text-align:center;">
 
     </section>
 
-    <!-- HISTORIAL -->
-
     <section class="card">
 
         <h2>📋 Historial</h2>
 
-        <div id="historial">
-        </div>
+        <div id="historial"></div>
 
     </section>
 
@@ -205,9 +154,9 @@ text-align:center;">
 
         let chart;
 
-        /* =====================
+        /* ==========================
            RECETAS
-        ===================== */
+        ========================== */
 
         function actualizarReceta() {
 
@@ -217,34 +166,22 @@ text-align:center;">
                 ).value;
 
             const base =
-                document.getElementById(
-                    "base"
-                );
+                document.getElementById("base");
 
             const agua =
-                document.getElementById(
-                    "agua"
-                );
+                document.getElementById("agua");
 
             const leche =
-                document.getElementById(
-                    "leche"
-                );
+                document.getElementById("leche");
 
             const espresso =
-                document.getElementById(
-                    "espresso"
-                );
+                document.getElementById("espresso");
 
             const temperatura =
-                document.getElementById(
-                    "temperatura"
-                );
+                document.getElementById("temperatura");
 
             const info =
-                document.getElementById(
-                    "infoReceta"
-                );
+                document.getElementById("infoReceta");
 
             switch (bebida) {
 
@@ -256,11 +193,23 @@ text-align:center;">
                     espresso.value = 0;
                     temperatura.value = 75;
 
-                    info.innerHTML =
-                        `
-🍵 2g Matcha<br>
-💧 60ml Agua<br>
-🌡️ 75°C
+                    info.innerHTML = `
+<h3>🍵 Matcha Tradicional</h3>
+
+<p>✅ Lleva Matcha</p>
+<p>✅ Lleva Agua</p>
+<p>❌ No lleva Leche</p>
+<p>❌ No lleva Espresso</p>
+
+<hr>
+
+<p>🍵 Matcha: 2 g</p>
+<p>💧 Agua: 60 ml</p>
+<p>🌡️ 75°C</p>
+
+<p>
+Preparación tradicional japonesa.
+</p>
 `;
 
                     break;
@@ -273,10 +222,24 @@ text-align:center;">
                     espresso.value = 0;
                     temperatura.value = 75;
 
-                    info.innerHTML =
-                        `
-🍵 2g Matcha<br>
-🥛 200ml Leche
+                    info.innerHTML = `
+<h3>🥛 Matcha Latte</h3>
+
+<p>✅ Lleva Matcha</p>
+<p>✅ Lleva Agua</p>
+<p>✅ Lleva Leche</p>
+<p>❌ No lleva Espresso</p>
+
+<hr>
+
+<p>🍵 Matcha: 2 g</p>
+<p>💧 Agua: 60 ml</p>
+<p>🥛 Leche: 200 ml</p>
+<p>🌡️ 75°C</p>
+
+<p>
+Textura cremosa y equilibrada.
+</p>
 `;
 
                     break;
@@ -289,9 +252,23 @@ text-align:center;">
                     espresso.value = 0;
                     temperatura.value = 5;
 
-                    info.innerHTML =
-                        `
-🧊 Matcha frío
+                    info.innerHTML = `
+<h3>🧊 Iced Matcha Latte</h3>
+
+<p>✅ Lleva Matcha</p>
+<p>✅ Lleva Agua</p>
+<p>✅ Lleva Leche</p>
+<p>🧊 Lleva Hielo</p>
+
+<hr>
+
+<p>🍵 Matcha: 2 g</p>
+<p>💧 Agua: 60 ml</p>
+<p>🥛 Leche: 220 ml</p>
+
+<p>
+Bebida fría y refrescante.
+</p>
 `;
 
                     break;
@@ -304,9 +281,23 @@ text-align:center;">
                     espresso.value = 0;
                     temperatura.value = 70;
 
-                    info.innerHTML =
-                        `
-🍓 Matcha Fresa
+                    info.innerHTML = `
+<h3>🍓 Matcha Fresa</h3>
+
+<p>✅ Lleva Matcha</p>
+<p>✅ Lleva Fresa</p>
+<p>✅ Lleva Leche</p>
+<p>❌ No lleva Espresso</p>
+
+<hr>
+
+<p>🍵 Matcha: 2 g</p>
+<p>🍓 Fresa: 20 g</p>
+<p>🥛 Leche: 180 ml</p>
+
+<p>
+Perfil dulce y afrutado.
+</p>
 `;
 
                     break;
@@ -319,9 +310,22 @@ text-align:center;">
                     espresso.value = 0;
                     temperatura.value = 70;
 
-                    info.innerHTML =
-                        `
-🍫 Matcha Chocolate
+                    info.innerHTML = `
+<h3>🍫 Matcha Chocolate</h3>
+
+<p>✅ Lleva Matcha</p>
+<p>✅ Lleva Chocolate</p>
+<p>✅ Lleva Leche</p>
+
+<hr>
+
+<p>🍵 Matcha: 2 g</p>
+<p>🍫 Chocolate: 15 g</p>
+<p>🥛 Leche: 180 ml</p>
+
+<p>
+Versión dulce y cremosa.
+</p>
 `;
 
                     break;
@@ -334,9 +338,22 @@ text-align:center;">
                     espresso.value = 0;
                     temperatura.value = 70;
 
-                    info.innerHTML =
-                        `
-☕ Chai Latte
+                    info.innerHTML = `
+<h3>☕ Chai Latte</h3>
+
+<p>✅ Lleva Chai</p>
+<p>✅ Lleva Leche</p>
+<p>❌ No lleva Espresso</p>
+
+<hr>
+
+<p>☕ Chai: 60 ml</p>
+<p>🥛 Leche: 180 ml</p>
+<p>🌡️ 70°C</p>
+
+<p>
+Canela, cardamomo y jengibre.
+</p>
 `;
 
                     break;
@@ -349,9 +366,21 @@ text-align:center;">
                     espresso.value = 0;
                     temperatura.value = 5;
 
-                    info.innerHTML =
-                        `
-🧊 Iced Chai
+                    info.innerHTML = `
+<h3>🧊 Iced Chai Latte</h3>
+
+<p>✅ Lleva Chai</p>
+<p>✅ Lleva Leche</p>
+<p>🧊 Lleva Hielo</p>
+
+<hr>
+
+<p>☕ Chai: 60 ml</p>
+<p>🥛 Leche: 220 ml</p>
+
+<p>
+Versión fría y especiada.
+</p>
 `;
 
                     break;
@@ -364,11 +393,22 @@ text-align:center;">
                     espresso.value = 30;
                     temperatura.value = 70;
 
-                    info.innerHTML =
-                        `
-⚡ Dirty Chai
-<br>
-30ml Espresso
+                    info.innerHTML = `
+<h3>⚡ Dirty Chai</h3>
+
+<p>✅ Lleva Chai</p>
+<p>✅ Lleva Leche</p>
+<p>✅ Lleva Espresso</p>
+
+<hr>
+
+<p>☕ Chai: 60 ml</p>
+<p>🥛 Leche: 180 ml</p>
+<p>⚡ Espresso: 30 ml</p>
+
+<p>
+Mezcla de chai especiado y espresso.
+</p>
 `;
 
                     break;
@@ -379,9 +419,9 @@ text-align:center;">
 
         }
 
-        /* =====================
+        /* ==========================
            DIAGNOSTICO
-        ===================== */
+        ========================== */
 
         function evaluarBebida() {
 
@@ -399,33 +439,25 @@ text-align:center;">
 
             let resultado = "";
 
-            if (
-                bebida.includes("Iced")
-            ) {
+            if (bebida.includes("Iced")) {
 
-                resultado =
-                    "🧊 Preparación fría";
+                resultado = "🧊 Bebida Fría";
 
-            }
-
-            else {
+            } else {
 
                 if (temp < 60) {
 
-                    resultado =
-                        "🟠 Temperatura baja";
+                    resultado = "🟠 Temperatura baja";
 
                 }
                 else if (temp <= 80) {
 
-                    resultado =
-                        "🟢 Correcto";
+                    resultado = "🟢 Correcto";
 
                 }
                 else {
 
-                    resultado =
-                        "🔴 Demasiado caliente";
+                    resultado = "🔴 Demasiado caliente";
 
                 }
 
@@ -438,9 +470,9 @@ text-align:center;">
 
         }
 
-        /* =====================
+        /* ==========================
            GUARDAR
-        ===================== */
+        ========================== */
 
         function guardarBebida() {
 
@@ -448,9 +480,8 @@ text-align:center;">
 
                 id: Date.now(),
 
-                fecha:
-                    new Date()
-                        .toLocaleString(),
+                fecha: new Date()
+                    .toLocaleString(),
 
                 tipo:
                     document.getElementById(
@@ -495,28 +526,21 @@ text-align:center;">
             });
 
             localStorage.setItem(
-
                 "bebidasPreparaciones",
-
-                JSON.stringify(
-                    bebidas
-                )
-
+                JSON.stringify(bebidas)
             );
 
             renderHistorial();
             actualizarKPIs();
             actualizarGrafico();
 
-            alert(
-                "✅ Bebida guardada"
-            );
+            alert("✅ Preparación guardada");
 
         }
 
-        /* =====================
+        /* ==========================
            HISTORIAL
-        ===================== */
+        ========================== */
 
         function renderHistorial() {
 
@@ -530,9 +554,7 @@ text-align:center;">
 
 <div class="registro">
 
-<h3>
-${b.tipo}
-</h3>
+<h3>${b.tipo}</h3>
 
 <p>Base: ${b.base}</p>
 
@@ -556,19 +578,18 @@ ${b.tipo}
 
         }
 
-        /* =====================
+        /* ==========================
            KPI
-        ===================== */
+        ========================== */
 
         function actualizarKPIs() {
 
             document.getElementById(
                 "kpiTotal"
-            ).innerHTML =
+            ).innerText =
                 bebidas.length;
 
-            if (!bebidas.length)
-                return;
+            if (!bebidas.length) return;
 
             let temp = 0;
             let leche = 0;
@@ -577,13 +598,8 @@ ${b.tipo}
 
             bebidas.forEach(b => {
 
-                temp += Number(
-                    b.temperatura
-                );
-
-                leche += Number(
-                    b.leche
-                );
+                temp += Number(b.temperatura);
+                leche += Number(b.leche);
 
                 tipos[b.tipo] =
                     (tipos[b.tipo] || 0) + 1;
@@ -592,30 +608,26 @@ ${b.tipo}
 
             document.getElementById(
                 "kpiTemp"
-            ).innerHTML =
+            ).innerText =
 
-                (
-                    temp / bebidas.length
-                ).toFixed(0)
-                + "°C";
+                (temp / bebidas.length)
+                    .toFixed(0) + "°C";
 
             document.getElementById(
                 "kpiLeche"
-            ).innerHTML =
+            ).innerText =
 
-                (
-                    leche / bebidas.length
-                ).toFixed(0)
-                + "ml";
+                (leche / bebidas.length)
+                    .toFixed(0) + "ml";
 
             let favorita = "-";
-            let cantidad = 0;
+            let max = 0;
 
             for (let tipo in tipos) {
 
-                if (tipos[tipo] > cantidad) {
+                if (tipos[tipo] > max) {
 
-                    cantidad = tipos[tipo];
+                    max = tipos[tipo];
                     favorita = tipo;
 
                 }
@@ -624,14 +636,14 @@ ${b.tipo}
 
             document.getElementById(
                 "kpiFavorita"
-            ).innerHTML =
+            ).innerText =
                 favorita;
 
         }
 
-        /* =====================
+        /* ==========================
            GRAFICO
-        ===================== */
+        ========================== */
 
         function actualizarGrafico() {
 
@@ -648,41 +660,40 @@ ${b.tipo}
 
             }
 
-            chart =
-                new Chart(
+            chart = new Chart(
 
-                    document.getElementById(
-                        "grafico"
-                    ),
+                document.getElementById(
+                    "grafico"
+                ),
 
-                    {
+                {
 
-                        type: "line",
+                    type: "line",
 
-                        data: {
+                    data: {
 
-                            labels:
-                                datos.map(
-                                    (_, i) => "#" + (i + 1)
-                                ),
+                        labels:
+                            datos.map(
+                                (_, i) => "#" + (i + 1)
+                            ),
 
-                            datasets: [{
+                        datasets: [{
 
-                                label: "Temperatura",
+                            label: "Temperatura",
 
-                                data: datos,
+                            data: datos,
 
-                                borderColor: "#22c55e",
+                            borderColor: "#22c55e",
 
-                                tension: .3,
+                            fill: false,
 
-                                fill: false
+                            tension: .3
 
-                            }]
+                        }]
 
-                        }
+                    }
 
-                    });
+                });
 
         }
 
