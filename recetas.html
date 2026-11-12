@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>📖 Recetas | Coffee Brew Lab</title>
+
+    <link rel="stylesheet" href="app.css">
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <a href="index.html">← Inicio</a>
+
+        <h1>📖 Recetas</h1>
+
+    </header>
+
+    <section class="kpis">
+
+        <div class="kpi">
+            <h2 id="kpiRecetas">0</h2>
+            <p>Recetas</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiEspresso">0</h2>
+            <p>Espresso</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiFiltros">0</h2>
+            <p>Filtros</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiFavoritas">0</h2>
+            <p>Favoritas</p>
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2 id="tituloFormulario">
+            Nueva Receta
+        </h2>
+
+        <select id="cafe">
+            <option value="">Seleccionar Café</option>
+        </select>
+
+        <select id="metodo">
+
+            <option>Espresso</option>
+            <option>V60</option>
+            <option>Prensa Francesa</option>
+            <option>Moka Italiana</option>
+            <option>AeroPress</option>
+            <option>Cold Brew</option>
+
+        </select>
+
+        <input type="number" id="dosis" placeholder="Café (g)">
+
+        <input type="number" id="agua" placeholder="Agua (ml)">
+
+        <input type="text" id="ratio" placeholder="1:2 / 1:15 / 1:16">
+
+        <input type="text" id="tiempo" placeholder="28s / 04:00 / 12h">
+
+        <input type="number" id="temperatura" placeholder="Temperatura °C">
+
+        <textarea id="notas" placeholder="Notas de preparación">
+</textarea>
+
+        <label>
+
+            <input type="checkbox" id="favorita">
+
+            Receta Favorita
+
+        </label>
+
+        <br><br>
+
+        <button id="btnGuardar" onclick="guardarReceta()">
+
+            Guardar Receta
+
+        </button>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Filtrar</h2>
+
+        <select id="filtroMetodo" onchange="renderRecetas()">
+
+            <option value="">
+                Todos los métodos
+            </option>
+
+            <option>Espresso</option>
+            <option>V60</option>
+            <option>Prensa Francesa</option>
+            <option>Moka Italiana</option>
+            <option>AeroPress</option>
+            <option>Cold Brew</option>
+
+        </select>
+
+    </section>
+
+    <section class="card">
+
+        <h2>⭐ Favoritas</h2>
+
+        <div id="favoritas">
+
+            Sin recetas favoritas
+
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>📚 Biblioteca</h2>
+
+        <div id="listaRecetas"></div>
+
+    </section>
+
+    <script>
+
+        let recetaEditando = null;
+
+        const recetas =
+            JSON.parse(
+                localStorage.getItem("recetas")
+            ) || [];
+
+        const cafes =
+            JSON.parse(
+                localStorage.getItem("cafes")
+            ) || [];
+
+        const selectCafe =
+            document.getElementById("cafe");
+
+        cafes.forEach(cafe => {
+
+            selectCafe.innerHTML +=
+                `<option>${cafe.nombre}</option>`;
+
+        });
+
+        function guardarReceta() {
+
+            const receta = {
+
+                id:
+                    recetaEditando || Date.now(),
+
+                fecha:
+                    new Date().toLocaleString(),
+
+                cafe:
+                    document.getElementById(
+                        "cafe").value,
+
+                metodo:
+                    document.getElementById(
+                        "metodo").value,
+
+                dosis:
+                    document.getElementById(
+                        "dosis").value,
+
+                agua:
+                    document.getElementById(
+                        "agua").value,
+
+                ratio:
+                    document.getElementById(
+                        "ratio").value,
+
+                tiempo:
+                    document.getElementById(
+                        "tiempo").value,
+
+                temperatura:
+                    document.getElementById(
+                        "temperatura").value,
+
+                notas:
+                    document.getElementById(
+                        "notas").value,
+
+                favorita:
+                    document.getElementById(
+                        "favorita").checked
+
+            };
+
+            if (recetaEditando) {
+
+                const index =
+                    recetas.findIndex(
+                        r => r.id === recetaEditando
+                    );
+
+                recetas[index] = receta;
+
+                recetaEditando = null;
+
+                document
+                    .getElementById(
+                        "tituloFormulario"
+                    ).innerText =
+                    "Nueva Receta";
+
+                document
+                    .getElementById(
+                        "btnGuardar"
+                    ).innerText =
+                    "Guardar Receta";
+
+            } else {
+
+                recetas.push(receta);
+
+            }
+
+            localStorage.setItem(
+                "recetas",
+                JSON.stringify(recetas)
+            );
+
+            limpiarFormulario();
+
+            renderRecetas();
+
+            actualizarKPIs();
+
+        }
+
+        function editarReceta(id) {
+
+            const receta =
+                recetas.find(
+                    r => r.id === id
+                );
+
+            if (!receta) return;
+
+            recetaEditando = id;
+
+            document.getElementById("cafe").value =
+                receta.cafe;
+
+            document.getElementById("metodo").value =
+                receta.metodo;
+
+            document.getElementById("dosis").value =
+                receta.dosis;
+
+            document.getElementById("agua").value =
+                receta.agua;
+
+            document.getElementById("ratio").value =
+                receta.ratio;
+
+            document.getElementById("tiempo").value =
+                receta.tiempo;
+
+            document.getElementById("temperatura").value =
+                receta.temperatura;
+
+            document.getElementById("notas").value =
+                receta.notas;
+
+            document.getElementById("favorita").checked =
+                receta.favorita;
+
+            document
+                .getElementById(
+                    "tituloFormulario"
+                ).innerText =
+                "✏️ Editar Receta";
+
+            document
+                .getElementById(
+                    "btnGuardar"
+                ).innerText =
+                "Actualizar Receta";
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+        function duplicarReceta(id) {
+
+            const receta =
+                recetas.find(
+                    r => r.id === id
+                );
+
+            if (!receta) return;
+
+            recetas.push({
+
+                ...receta,
+
+                id: Date.now(),
+
+                fecha:
+                    new Date().toLocaleString()
+
+            });
+
+            localStorage.setItem(
+                "recetas",
+                JSON.stringify(recetas)
+            );
+
+            renderRecetas();
+
+            actualizarKPIs();
+
+        }
+
+        function eliminarReceta(id) {
+
+            const nuevas =
+                recetas.filter(
+                    r => r.id !== id
+                );
+
+            localStorage.setItem(
+                "recetas",
+                JSON.stringify(nuevas)
+            );
+
+            location.reload();
+
+        }
+
+        function limpiarFormulario() {
+
+            document.getElementById("cafe").selectedIndex = 0;
+            document.getElementById("metodo").selectedIndex = 0;
+
+            document.getElementById("dosis").value = "";
+            document.getElementById("agua").value = "";
+            document.getElementById("ratio").value = "";
+            document.getElementById("tiempo").value = "";
+            document.getElementById("temperatura").value = "";
+            document.getElementById("notas").value = "";
+
+            document.getElementById("favorita").checked = false;
+
+        }
+
+        function renderRecetas() {
+
+            const filtro =
+                document.getElementById(
+                    "filtroMetodo"
+                ).value;
+
+            let lista =
+                [...recetas];
+
+            if (filtro) {
+
+                lista =
+                    lista.filter(
+                        r => r.metodo === filtro
+                    );
+
+            }
+
+            document
+                .getElementById(
+                    "listaRecetas"
+                ).innerHTML =
+
+                lista
+                    .reverse()
+                    .map(r => `
+
+    <div class="registro">
+
+        <h3>
+        ☕ ${r.cafe || "Sin Café"}
+        </h3>
+
+        <p>📌 ${r.metodo}</p>
+
+        <p>⚖️ ${r.dosis || "-"} g</p>
+
+        <p>💧 ${r.agua || "-"} ml</p>
+
+        <p>📊 ${r.ratio || "-"}</p>
+
+        <p>⏱️ ${r.tiempo || "-"}</p>
+
+        <p>🌡️ ${r.temperatura || "-"} °C</p>
+
+        <p>📝 ${r.notas || "-"}</p>
+
+        <small>${r.fecha}</small>
+
+        <br><br>
+
+        <button onclick="editarReceta(${r.id})">
+        ✏️ Editar
+        </button>
+
+        <br><br>
+
+        <button onclick="duplicarReceta(${r.id})">
+        📄 Duplicar
+        </button>
+
+        <br><br>
+
+        <button onclick="eliminarReceta(${r.id})">
+        🗑️ Eliminar
+        </button>
+
+    </div>
+
+    `).join("");
+
+            mostrarFavoritas();
+
+        }
+
+        function mostrarFavoritas() {
+
+            const favoritas =
+                recetas.filter(
+                    r => r.favorita
+                );
+
+            document
+                .getElementById(
+                    "favoritas"
+                ).innerHTML =
+
+                favoritas.length
+
+                    ?
+
+                    favoritas.map(f => `
+
+    <div class="registro">
+
+    ⭐ ${f.metodo}
+    -
+    ${f.cafe}
+
+    </div>
+
+    `).join("")
+
+                    :
+
+                    "Sin favoritas";
+
+        }
+
+        function actualizarKPIs() {
+
+            document.getElementById(
+                "kpiRecetas"
+            ).innerText =
+                recetas.length;
+
+            document.getElementById(
+                "kpiEspresso"
+            ).innerText =
+
+                recetas.filter(
+                    r => r.metodo === "Espresso"
+                ).length;
+
+            document.getElementById(
+                "kpiFiltros"
+            ).innerText =
+
+                recetas.filter(
+                    r => r.metodo !== "Espresso"
+                ).length;
+
+            document.getElementById(
+                "kpiFavoritas"
+            ).innerText =
+
+                recetas.filter(
+                    r => r.favorita
+                ).length;
+
+        }
+
+        renderRecetas();
+        actualizarKPIs();
+
+    </script>
+
+</body>
+
+</html>
