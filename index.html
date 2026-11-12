@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Coffee Brew Lab</title>
+
+    <link rel="stylesheet" href="app.css">
+
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="theme-color" content="#c58b45">
+
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="logo">☕</div>
+
+        <h1 class="title">
+            Coffee Brew Lab
+        </h1>
+
+        <div class="subtitle">
+            PWA para Baristas y Café de Especialidad
+        </div>
+
+    </header>
+
+    <!-- KPI GENERALES -->
+
+    <section class="kpis">
+
+        <div class="kpi">
+
+            <h2 id="kpiShots">0</h2>
+
+            <p>Espressos</p>
+
+        </div>
+
+        <div class="kpi">
+
+            <h2 id="kpiV60">0</h2>
+
+            <p>V60</p>
+
+        </div>
+
+        <div class="kpi">
+
+            <h2 id="kpiFrancesa">0</h2>
+
+            <p>Francesa</p>
+
+        </div>
+
+        <div class="kpi">
+
+            <h2 id="kpiMoka">0</h2>
+
+            <p>Moka</p>
+
+        </div>
+
+    </section>
+
+    <!-- MÉTODOS -->
+
+    <h2>Métodos de Preparación</h2>
+
+    <section class="dashboard">
+
+        <a href="espresso.html" class="brew-card">
+
+            <div class="icon">☕</div>
+
+            <h3>Espresso</h3>
+
+            <p>
+                Calibración, ratio,
+                molienda y extracción.
+            </p>
+
+            <span class="badge">
+                Barista
+            </span>
+
+        </a>
+
+        <a href="v60.html" class="brew-card">
+
+            <div class="icon">💧</div>
+
+            <h3>V60</h3>
+
+            <p>
+                Bloom guiado
+                y vertidos por etapas.
+            </p>
+
+            <span class="badge">
+                Pour Over
+            </span>
+
+        </a>
+
+        <a href="francesa.html" class="brew-card">
+
+            <div class="icon">🇫🇷</div>
+
+            <h3>Prensa Francesa</h3>
+
+            <p>
+                Inmersión completa
+                y temporizador guiado.
+            </p>
+
+            <span class="badge">
+                French Press
+            </span>
+
+        </a>
+
+        <a href="moka.html" class="brew-card">
+
+            <div class="icon">🇮🇹</div>
+
+            <h3>Moka Italiana</h3>
+
+            <p>
+                Cafetera italiana
+                tradicional.
+            </p>
+
+            <span class="badge">
+                Moka
+            </span>
+
+        </a>
+
+        <a href="aeropress.html" class="brew-card">
+
+            <div class="icon">🛢️</div>
+
+            <h3>AeroPress</h3>
+
+            <p>
+                Método clásico,
+                invertido y WAC.
+            </p>
+
+            <span class="badge">
+                AeroPress
+            </span>
+
+        </a>
+
+        <a href="coldbrew.html" class="brew-card">
+
+            <div class="icon">❄️</div>
+
+            <h3>Cold Brew</h3>
+
+            <p>
+                Extracción lenta
+                en frío.
+            </p>
+
+            <span class="badge">
+                Cold Brew
+            </span>
+
+        </a>
+
+    </section>
+
+    <!-- HERRAMIENTAS -->
+
+    <h2>Gestión</h2>
+
+    <section class="quick-actions">
+
+        <a href="cafes.html" class="action">
+
+            <div class="icon">
+                🌱
+            </div>
+
+            <h3>Mis Cafés</h3>
+
+        </a>
+
+        <a href="recetas.html" class="action">
+
+            <div class="icon">
+                📖
+            </div>
+
+            <h3>Recetas</h3>
+
+        </a>
+
+        <a href="estadisticas.html" class="action">
+
+            <div class="icon">
+                📈
+            </div>
+
+            <h3>Estadísticas</h3>
+
+        </a>
+
+        <a href="configuracion.html" class="action">
+
+            <div class="icon">
+                ⚙️
+            </div>
+
+            <h3>Configuración</h3>
+
+        </a>
+
+    </section>
+
+    <!-- RESUMEN -->
+
+    <section class="card">
+
+        <h2>Resumen General</h2>
+
+        <p id="resumen">
+            Sin datos registrados.
+        </p>
+
+    </section>
+
+    <button id="installBtn" style="display:none;">
+
+        📲 Instalar Aplicación
+
+    </button>
+
+    <div class="footer">
+
+        Coffee Brew Lab v1.0
+
+    </div>
+
+    <script src="app.js"></script>
+
+    <script>
+
+        /* ==========================
+           KPIS PANEL
+        ========================== */
+
+        const espresso =
+            JSON.parse(
+                localStorage.getItem(
+                    "espressoShots"
+                )
+            ) || [];
+
+        const v60 =
+            JSON.parse(
+                localStorage.getItem(
+                    "v60Preparaciones"
+                )
+            ) || [];
+
+        const francesa =
+            JSON.parse(
+                localStorage.getItem(
+                    "francesaPreparaciones"
+                )
+            ) || [];
+
+        const moka =
+            JSON.parse(
+                localStorage.getItem(
+                    "mokaPreparaciones"
+                )
+            ) || [];
+
+        document
+            .getElementById("kpiShots")
+            .innerText =
+            espresso.length;
+
+        document
+            .getElementById("kpiV60")
+            .innerText =
+            v60.length;
+
+        document
+            .getElementById("kpiFrancesa")
+            .innerText =
+            francesa.length;
+
+        document
+            .getElementById("kpiMoka")
+            .innerText =
+            moka.length;
+
+        const total =
+
+            espresso.length +
+
+            v60.length +
+
+            francesa.length +
+
+            moka.length;
+
+        document
+            .getElementById("resumen")
+            .innerHTML =
+
+            `
+Preparaciones registradas:
+<strong>${total}</strong>
+`;
+
+        /* ==========================
+           PWA
+        ========================== */
+
+        let deferredPrompt;
+
+        window.addEventListener(
+            "beforeinstallprompt",
+
+            (event) => {
+
+                event.preventDefault();
+
+                deferredPrompt = event;
+
+                document
+                    .getElementById("installBtn")
+                    .style.display = "block";
+
+            }
+        );
+
+        document
+            .getElementById("installBtn")
+            .addEventListener(
+
+                "click",
+
+                async () => {
+
+                    if (!deferredPrompt)
+                        return;
+
+                    deferredPrompt.prompt();
+
+                }
+
+            );
+
+        /* ==========================
+           SERVICE WORKER
+        ========================== */
+
+        if (
+            "serviceWorker"
+            in navigator
+        ) {
+
+            window.addEventListener(
+
+                "load",
+
+                () => {
+
+                    navigator
+                        .serviceWorker
+                        .register(
+                            "./service-worker.js"
+                        );
+
+                });
+
+        }
+
+    </script>
+
+</body>
+
+</html>
