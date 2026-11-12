@@ -3,576 +3,560 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Cold Brew | Coffee Brew Lab</title>
+   <title>❄️ Cold Brew | Coffee Brew Lab</title>
 
-    <link rel="stylesheet" href="app.css">
+   <link rel="stylesheet" href="app.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
 <body>
 
-    <header class="topbar">
+   <header class="topbar">
 
-        <a href="index.html">
-            ← Inicio
-        </a>
+      <a href="index.html">
+         ← Inicio
+      </a>
 
-        <h1>❄️ Cold Brew</h1>
+      <h1>❄️ Cold Brew</h1>
 
-    </header>
+   </header>
 
-    <!-- KPI -->
+   <!-- KPI -->
 
-    <section class="kpis">
+   <section class="kpis">
 
-        <div class="kpi">
-            <h2 id="kpiPreparaciones">0</h2>
-            <p>Preparaciones</p>
-        </div>
+      <div class="kpi">
+         <h2 id="kpiTotal">0</h2>
+         <p>Preparaciones</p>
+      </div>
 
-        <div class="kpi">
-            <h2 id="kpiRatio">1:0</h2>
-            <p>Ratio Medio</p>
-        </div>
+      <div class="kpi">
+         <h2 id="kpiRatio">1:0</h2>
+         <p>Ratio Medio</p>
+      </div>
 
-        <div class="kpi">
-            <h2 id="kpiHoras">0h</h2>
-            <p>Maceración Media</p>
-        </div>
+      <div class="kpi">
+         <h2 id="kpiHoras">0h</h2>
+         <p>Maceración</p>
+      </div>
 
-        <div class="kpi">
-            <h2 id="kpiCafe">0g</h2>
-            <p>Café Medio</p>
-        </div>
+      <div class="kpi">
+         <h2 id="kpiCafe">0g</h2>
+         <p>Café Medio</p>
+      </div>
 
-    </section>
+   </section>
 
-    <!-- RECETA -->
+   <!-- RECETA -->
 
-    <section class="card">
+   <section class="card">
 
-        <h2>Receta Cold Brew</h2>
+      <h2>Nueva Preparación</h2>
 
-        <select id="cafeSeleccionado">
+      <select id="cafeSeleccionado">
+         <option value="">Seleccionar Café</option>
+      </select>
 
-            <option value="">
-                Seleccionar Café
-            </option>
+      <select id="tipo">
 
-        </select>
+         <option value="Concentrado">
+            Concentrado
+         </option>
 
-        <select id="tipo">
+         <option value="Ready To Drink">
+            Ready To Drink
+         </option>
 
-            <option value="Concentrado">
-                Concentrado
-            </option>
+      </select>
 
-            <option value="Ready To Drink">
-                Ready To Drink
-            </option>
+      <input type="number" id="cafe" value="100" placeholder="Café (g)" oninput="actualizarRatio()">
 
-        </select>
+      <input type="number" id="agua" value="1000" placeholder="Agua (ml)" oninput="actualizarRatio()">
 
-        <input type="number" id="cafe" value="100" placeholder="Café (g)" oninput="calcularRatio()">
+      <input type="number" id="horas" value="12" placeholder="Horas" oninput="evaluarPreparacion()">
 
-        <input type="number" id="agua" value="1000" placeholder="Agua (ml)" oninput="calcularRatio()">
+      <select id="temperatura">
 
-        <input type="number" id="horas" value="12" placeholder="Horas de maceración">
+         <option>Nevera</option>
 
-        <select id="temperatura">
+         <option>Temperatura Ambiente</option>
 
-            <option value="Nevera">
-                Nevera
-            </option>
+      </select>
 
-            <option value="Ambiente">
-                Temperatura ambiente
-            </option>
-
-        </select>
-
-        <div id="ratioResultado" style="
-font-size:22px;
+      <div id="ratioResultado" style="
+margin-top:15px;
+font-size:24px;
 font-weight:bold;
 text-align:center;
-margin-top:10px;
 color:#c58b45;">
 
-            Ratio 1:10
+         Ratio 1:10
 
-        </div>
+      </div>
 
-    </section>
+   </section>
 
-    <!-- GUÍA -->
+   <!-- DIAGNOSTICO -->
 
-    <section class="card">
+   <section class="card">
 
-        <h2>Guía Recomendada</h2>
+      <h2>Diagnóstico</h2>
 
-        <div id="guia">
-
-            <p>🫘 Moler grueso</p>
-
-            <p>💧 Mezclar café y agua</p>
-
-            <p>🫙 Tapar recipiente</p>
-
-            <p>⏳ Macerar entre 8 y 24 horas</p>
-
-            <p>🧃 Filtrar cuidadosamente</p>
-
-            <p>❄️ Conservar refrigerado</p>
-
-        </div>
-
-    </section>
-
-    <!-- EVALUACIÓN -->
-
-    <section class="card">
-
-        <h2>Evaluación Estimada</h2>
-
-        <div id="evaluacion" style="
+      <div id="diagnostico" style="
+text-align:center;
 font-size:22px;
-font-weight:bold;
-text-align:center;">
+font-weight:bold;">
 
-            Suave y Dulce
+         ✅ Suave y Dulce
 
-        </div>
+      </div>
 
-    </section>
+   </section>
 
-    <!-- NOTAS -->
+   <!-- NOTAS -->
 
-    <section class="card">
+   <section class="card">
 
-        <h2>Notas Sensoriales</h2>
+      <h2>Notas Sensoriales</h2>
 
-        <textarea id="notas" placeholder="Chocolate, caramelo, frutos secos..."></textarea>
+      <textarea id="notas" placeholder="Chocolate, frutos secos, vainilla...">
+</textarea>
 
-    </section>
+   </section>
 
-    <!-- GUARDAR -->
+   <!-- GUARDAR -->
 
-    <section class="card">
+   <section class="card">
 
-        <button onclick="guardarPreparacion()">
+      <button onclick="guardarColdBrew()">
+         💾 Guardar Preparación
+      </button>
 
-            Guardar Preparación
+   </section>
 
-        </button>
+   <!-- GRAFICO -->
 
-    </section>
+   <section class="card">
 
-    <!-- GRAFICO -->
+      <h2>📈 Historial de Ratios</h2>
 
-    <section class="card">
+      <canvas id="graficoColdBrew"></canvas>
 
-        <h2>📈 Historial de Ratios</h2>
+   </section>
 
-        <canvas id="graficoColdBrew"></canvas>
+   <!-- HISTORIAL -->
 
-    </section>
+   <section class="card">
 
-    <!-- HISTORIAL -->
+      <h2>📋 Historial</h2>
 
-    <section class="card">
+      <div id="historial"></div>
 
-        <h2>📋 Historial</h2>
+   </section>
 
-        <div id="historial"></div>
+   <script>
 
-    </section>
+      const preparaciones =
+         JSON.parse(
+            localStorage.getItem(
+               "coldbrewPreparaciones"
+            )
+         ) || [];
 
-    <script>
+      const cafes =
+         JSON.parse(
+            localStorage.getItem(
+               "cafes"
+            )
+         ) || [];
 
-        const preparaciones =
-            JSON.parse(
-                localStorage.getItem(
-                    "coldbrewPreparaciones"
-                )
-            ) || [];
+      cafes.forEach(cafe => {
 
-        let chart = null;
+         document.getElementById(
+            "cafeSeleccionado"
+         ).innerHTML +=
 
-        if (
-            typeof cargarSelectCafes === "function"
-        ) {
+            `<option>
+${cafe.nombre}
+</option>`;
 
-            cargarSelectCafes(
-                "cafeSeleccionado"
+      });
+
+      let chart;
+
+      /* ==========================
+         RATIO
+      ========================== */
+
+      function actualizarRatio() {
+
+         const cafe =
+            parseFloat(
+               document.getElementById(
+                  "cafe"
+               ).value
+            ) || 0;
+
+         const agua =
+            parseFloat(
+               document.getElementById(
+                  "agua"
+               ).value
+            ) || 0;
+
+         if (cafe === 0) return;
+
+         const ratio =
+
+            (agua / cafe)
+               .toFixed(1);
+
+         document.getElementById(
+            "ratioResultado"
+         ).innerHTML =
+
+            "Ratio 1:" + ratio;
+
+         actualizarKPIs();
+
+      }
+
+      /* ==========================
+         EVALUACION
+      ========================== */
+
+      function evaluarPreparacion() {
+
+         const horas =
+            parseFloat(
+               document.getElementById(
+                  "horas"
+               ).value
+            ) || 0;
+
+         let resultado = "";
+
+         if (horas < 8) {
+
+            resultado =
+               "🟠 Maceración corta";
+
+         }
+         else if (horas <= 16) {
+
+            resultado =
+               "✅ Suave y Dulce";
+
+         }
+         else if (horas <= 24) {
+
+            resultado =
+               "☕ Intenso y Complejo";
+
+         }
+         else {
+
+            resultado =
+               "🔴 Posible Sobreextracción";
+
+         }
+
+         document.getElementById(
+            "diagnostico"
+         ).innerHTML =
+            resultado;
+
+      }
+
+      /* ==========================
+         GUARDAR
+      ========================== */
+
+      function guardarColdBrew() {
+
+         const cafe =
+            Number(
+               document.getElementById(
+                  "cafe"
+               ).value
             );
 
-        }
-
-        function calcularRatio() {
-
-            const cafe =
-                parseFloat(
-                    document.getElementById(
-                        "cafe"
-                    ).value
-                ) || 0;
-
-            const agua =
-                parseFloat(
-                    document.getElementById(
-                        "agua"
-                    ).value
-                ) || 0;
-
-            if (cafe === 0) return;
-
-            const ratio =
-                (agua / cafe)
-                    .toFixed(1);
-
-            document.getElementById(
-                "ratioResultado"
-            ).innerHTML =
-
-                "Ratio 1:" + ratio;
-
-            actualizarEvaluacion();
-
-        }
-
-        function actualizarEvaluacion() {
-
-            const horas =
-                parseFloat(
-                    document.getElementById(
-                        "horas"
-                    ).value
-                ) || 0;
-
-            let resultado = "";
-
-            if (horas < 8) {
-
-                resultado =
-                    "⚠️ Maceración corta";
-
-            }
-            else if (horas <= 16) {
-
-                resultado =
-                    "✅ Suave y Dulce";
-
-            }
-            else if (horas <= 24) {
-
-                resultado =
-                    "☕ Intenso y Complejo";
-
-            }
-            else {
-
-                resultado =
-                    "🔥 Posible sobreextracción";
-
-            }
-
-            document
-                .getElementById(
-                    "evaluacion"
-                )
-                .innerHTML =
-                resultado;
-
-        }
-
-        function guardarPreparacion() {
-
-            const cafe =
-                Number(
-                    document.getElementById(
-                        "cafe"
-                    ).value
-                );
-
-            const agua =
-                Number(
-                    document.getElementById(
-                        "agua"
-                    ).value
-                );
-
-            const registro = {
-
-                id: Date.now(),
-
-                fecha:
-                    new Date()
-                        .toLocaleString(),
-
-                cafeNombre:
-                    document
-                        .getElementById(
-                            "cafeSeleccionado"
-                        ).value,
-
-                tipo:
-                    document
-                        .getElementById(
-                            "tipo"
-                        ).value,
-
-                cafe,
-
-                agua,
-
-                horas:
-                    document
-                        .getElementById(
-                            "horas"
-                        ).value,
-
-                temperatura:
-                    document
-                        .getElementById(
-                            "temperatura"
-                        ).value,
-
-                ratio:
-                    (agua / cafe)
-                        .toFixed(1),
-
-                notas:
-                    document
-                        .getElementById(
-                            "notas"
-                        ).value
-
-            };
-
-            preparaciones.push(
-                registro
+         const agua =
+            Number(
+               document.getElementById(
+                  "agua"
+               ).value
             );
 
-            localStorage.setItem(
+         const ratio =
 
-                "coldbrewPreparaciones",
+            (agua / cafe)
+               .toFixed(1);
 
-                JSON.stringify(
-                    preparaciones
-                )
+         preparaciones.push({
 
+            id: Date.now(),
+
+            fecha:
+               new Date()
+                  .toLocaleString(),
+
+            cafeNombre:
+               document.getElementById(
+                  "cafeSeleccionado"
+               ).value,
+
+            tipo:
+               document.getElementById(
+                  "tipo"
+               ).value,
+
+            cafe,
+
+            agua,
+
+            ratio,
+
+            horas:
+               document.getElementById(
+                  "horas"
+               ).value,
+
+            temperatura:
+               document.getElementById(
+                  "temperatura"
+               ).value,
+
+            diagnostico:
+               document.getElementById(
+                  "diagnostico"
+               ).innerText,
+
+            notas:
+               document.getElementById(
+                  "notas"
+               ).value
+
+         });
+
+         localStorage.setItem(
+
+            "coldbrewPreparaciones",
+
+            JSON.stringify(
+               preparaciones
+            )
+
+         );
+
+         renderHistorial();
+         actualizarKPIs();
+         actualizarGrafico();
+
+         alert(
+            "✅ Preparación guardada"
+         );
+
+      }
+
+      /* ==========================
+         HISTORIAL
+      ========================== */
+
+      function renderHistorial() {
+
+         document.getElementById(
+            "historial"
+         ).innerHTML =
+
+            [...preparaciones]
+
+               .reverse()
+
+               .map(p => `
+
+<div class="registro">
+
+<h3>
+❄️ ${p.cafeNombre || "Sin Café"}
+</h3>
+
+<p>
+${p.tipo}
+</p>
+
+<p>
+⚖️ ${p.cafe} g
+</p>
+
+<p>
+💧 ${p.agua} ml
+</p>
+
+<p>
+📊 1:${p.ratio}
+</p>
+
+<p>
+⏳ ${p.horas} h
+</p>
+
+<p>
+🌡️ ${p.temperatura}
+</p>
+
+<p>
+${p.diagnostico}
+</p>
+
+<p>
+📝 ${p.notas || "-"}
+</p>
+
+<small>
+${p.fecha}
+</small>
+
+</div>
+
+`).join("");
+
+      }
+
+      /* ==========================
+         KPIS
+      ========================== */
+
+      function actualizarKPIs() {
+
+         document.getElementById(
+            "kpiTotal"
+         ).innerHTML =
+            preparaciones.length;
+
+         if (preparaciones.length === 0)
+            return;
+
+         let ratio = 0;
+         let horas = 0;
+         let cafe = 0;
+
+         preparaciones.forEach(p => {
+
+            ratio +=
+               Number(p.ratio);
+
+            horas +=
+               Number(p.horas);
+
+            cafe +=
+               Number(p.cafe);
+
+         });
+
+         document.getElementById(
+            "kpiRatio"
+         ).innerHTML =
+
+            "1:" +
+
+            (
+               ratio /
+               preparaciones.length
+            ).toFixed(1);
+
+         document.getElementById(
+            "kpiHoras"
+         ).innerHTML =
+
+            (
+               horas /
+               preparaciones.length
+            ).toFixed(1)
+            + "h";
+
+         document.getElementById(
+            "kpiCafe"
+         ).innerHTML =
+
+            (
+               cafe /
+               preparaciones.length
+            ).toFixed(0)
+            + "g";
+
+      }
+
+      /* ==========================
+         GRAFICO
+      ========================== */
+
+      function actualizarGrafico() {
+
+         const datos =
+
+            preparaciones.map(
+               p => Number(p.ratio)
             );
 
-            renderHistorial();
-            actualizarKPIs();
-            actualizarGrafico();
+         if (chart) {
 
-            alert(
-                "✅ Cold Brew guardado"
-            );
+            chart.destroy();
 
-        }
+         }
 
-        function renderHistorial() {
+         chart =
+            new Chart(
 
-            document
-                .getElementById(
-                    "historial"
-                )
-                .innerHTML =
+               document.getElementById(
+                  "graficoColdBrew"
+               ),
 
-                [...preparaciones]
+               {
 
-                    .reverse()
+                  type: "line",
 
-                    .map(p => `
+                  data: {
 
-    <div class="registro">
+                     labels:
 
-        <h3>
-        ❄️ ${p.cafeNombre || "Sin café"}
-        </h3>
-
-        <p>
-        Tipo: ${p.tipo}
-        </p>
-
-        <p>
-        ⚖️ ${p.cafe} g
-        </p>
-
-        <p>
-        💧 ${p.agua} ml
-        </p>
-
-        <p>
-        📊 1:${p.ratio}
-        </p>
-
-        <p>
-        ⏳ ${p.horas} h
-        </p>
-
-        <p>
-        🌡️ ${p.temperatura}
-        </p>
-
-        <p>
-        📝 ${p.notas || "-"}
-        </p>
-
-        <small>
-        ${p.fecha}
-        </small>
-
-    </div>
-
-    `).join("");
-
-        }
-
-        function actualizarKPIs() {
-
-            document
-                .getElementById(
-                    "kpiPreparaciones"
-                )
-                .innerText =
-                preparaciones.length;
-
-            if (
-                preparaciones.length === 0
-            ) return;
-
-            let totalRatio = 0;
-            let totalHoras = 0;
-            let totalCafe = 0;
-
-            preparaciones.forEach(p => {
-
-                totalRatio +=
-                    Number(p.ratio);
-
-                totalHoras +=
-                    Number(p.horas);
-
-                totalCafe +=
-                    Number(p.cafe);
-
-            });
-
-            document
-                .getElementById(
-                    "kpiRatio"
-                )
-                .innerText =
-
-                "1:" +
-
-                (
-                    totalRatio /
-                    preparaciones.length
-                ).toFixed(1);
-
-            document
-                .getElementById(
-                    "kpiHoras"
-                )
-                .innerText =
-
-                (
-                    totalHoras /
-                    preparaciones.length
-                ).toFixed(1)
-
-                + "h";
-
-            document
-                .getElementById(
-                    "kpiCafe"
-                )
-                .innerText =
-
-                (
-                    totalCafe /
-                    preparaciones.length
-                ).toFixed(0)
-
-                + "g";
-
-        }
-
-        function actualizarGrafico() {
-
-            const datos =
-                preparaciones.map(
-                    p => Number(p.ratio)
-                );
-
-            if (chart) {
-
-                chart.destroy();
-
-            }
-
-            chart =
-                new Chart(
-
-                    document
-                        .getElementById(
-                            "graficoColdBrew"
+                        datos.map(
+                           (_, i) => "#" + (i + 1)
                         ),
 
-                    {
+                     datasets: [{
 
-                        type: "line",
+                        label:
+                           "Ratio Cold Brew",
 
-                        data: {
+                        data: datos,
 
-                            labels:
-                                datos.map(
-                                    (_, i) => "#" + (i + 1)
-                                ),
+                        borderColor: "#c58b45",
 
-                            datasets: [{
+                        fill: false,
 
-                                label:
-                                    "Ratio",
+                        tension: .3
 
-                                data: datos,
+                     }]
 
-                                borderColor: "#c58b45",
+                  }
 
-                                fill: false,
+               });
 
-                                tension: .3
+      }
 
-                            }]
+      actualizarRatio();
+      evaluarPreparacion();
+      renderHistorial();
+      actualizarKPIs();
+      actualizarGrafico();
 
-                        }
-
-                    });
-
-        }
-
-        calcularRatio();
-        renderHistorial();
-        actualizarKPIs();
-        actualizarGrafico();
-
-        document
-            .getElementById("horas")
-            .addEventListener(
-                "input",
-                actualizarEvaluacion
-            );
-
-    </script>
+   </script>
 
 </body>
 
