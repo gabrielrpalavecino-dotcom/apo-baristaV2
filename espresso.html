@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Espresso | Coffee Brew Lab</title>
+
+    <link rel="stylesheet" href="app.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <a href="index.html">
+            ← Inicio
+        </a>
+
+        <h1>☕ Espresso</h1>
+
+    </header>
+
+    <section class="kpis">
+
+        <div class="kpi">
+            <h2 id="kpiTotal">0</h2>
+            <p>Shots</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiPromedio">0s</h2>
+            <p>Tiempo Medio</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiRatio">1:0</h2>
+            <p>Ratio Medio</p>
+        </div>
+
+        <div class="kpi">
+            <h2 id="kpiPerfectos">0%</h2>
+            <p>Perfectos</p>
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Nueva Extracción</h2>
+
+        <select id="cafe">
+
+            <option value="">
+                Seleccionar Café
+            </option>
+
+        </select>
+
+        <input type="number" id="dosis" placeholder="Dosis (g)" value="18" oninput="calcularObjetivo()">
+
+        <input type="number" id="salida" placeholder="Salida (g)" value="36" oninput="calcularRatioReal()">
+
+        <label>
+            Ratio Objetivo:
+            <span id="ratioLabel">1:2.0</span>
+        </label>
+
+        <input type="range" id="ratioObjetivo" min="1" max="3.5" step="0.1" value="2" oninput="calcularObjetivo()">
+
+        <div id="objetivoSalida">
+
+            Salida objetivo:
+            36 g
+
+        </div>
+
+        <input type="number" id="temperatura" placeholder="Temperatura" value="93">
+
+        <input type="text" id="molienda" placeholder="Molienda">
+
+    </section>
+
+    <section class="card">
+
+        <h2>Cronómetro</h2>
+
+        <div id="cronometro" class="cronometro">
+
+            00.0
+
+        </div>
+
+        <div class="progress">
+
+            <div id="progressBar" class="progress-bar">
+            </div>
+
+        </div>
+
+        <button onclick="startCrono()">
+
+            ▶ START
+
+        </button>
+
+        <br><br>
+
+        <button onclick="stopCrono()">
+
+            ■ STOP
+
+        </button>
+
+        <br><br>
+
+        <button onclick="resetCrono()">
+
+            ↺ RESET
+
+        </button>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Diagnóstico</h2>
+
+        <div id="diagnostico" style="
+font-size:22px;
+text-align:center;
+font-weight:bold;">
+
+            Esperando extracción
+
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <button onclick="guardarShot()">
+
+            💾 Guardar Shot
+
+        </button>
+
+    </section>
+
+    <section class="card">
+
+        <h2>📈 Consistencia</h2>
+
+        <canvas id="grafico"></canvas>
+
+    </section>
+
+    <section class="card">
+
+        <h2>📋 Historial</h2>
+
+        <div id="historial"></div>
+
+    </section>
+
+    <script>
+
+        const shots =
+            JSON.parse(
+                localStorage.getItem(
+                    "espressoShots"
+                )
+            ) || [];
+
+        const cafes =
+            JSON.parse(
+                localStorage.getItem(
+                    "cafes"
+                )
+            ) || [];
+
+        cafes.forEach(c => {
+
+            document.getElementById(
+                "cafe"
+            ).innerHTML +=
+
+                `<option>${c.nombre}</option>`;
+
+        });
+
+        let inicio;
+        let intervalo;
+        let chart;
+
+        /* =======================
+           RATIO
+        ======================= */
+
+        function calcularObjetivo() {
+
+            let dosis =
+                parseFloat(
+                    document.getElementById(
+                        "dosis"
+                    ).value
+                ) || 0;
+
+            let ratio =
+                parseFloat(
+                    document.getElementById(
+                        "ratioObjetivo"
+                    ).value
+                );
+
+            document.getElementById(
+                "ratioLabel"
+            ).innerHTML =
+                "1:" + ratio.toFixed(1);
+
+            let salida =
+                (dosis * ratio)
+                    .toFixed(1);
+
+            document.getElementById(
+                "objetivoSalida"
+            ).innerHTML =
+
+                "Salida objetivo: "
+                +
+                salida
+                +
+                " g";
+
+        }
+
+        function calcularRatioReal() {
+
+            const dosis =
+                parseFloat(
+                    document.getElementById(
+                        "dosis"
+                    ).value
+                ) || 0;
+
+            const salida =
+                parseFloat(
+                    document.getElementById(
+                        "salida"
+                    ).value
+                ) || 0;
+
+            if (dosis === 0) return;
+
+            const ratio =
+                (salida / dosis)
+                    .toFixed(2);
+
+            document.getElementById(
+                "ratioLabel"
+            ).innerHTML =
+                "1:" + ratio;
+
+        }
+
+        /* =======================
+           CRONOMETRO
+        ======================= */
+
+        function startCrono() {
+
+            clearInterval(intervalo);
+
+            inicio = Date.now();
+
+            intervalo = setInterval(() => {
+
+                const segundos =
+                    (Date.now() - inicio) / 1000;
+
+                document.getElementById(
+                    "cronometro"
+                ).innerHTML =
+                    segundos.toFixed(1);
+
+                const progreso =
+                    Math.min(
+                        (segundos / 28) * 100,
+                        100
+                    );
+
+                document.getElementById(
+                    "progressBar"
+                ).style.width =
+                    progreso + "%";
+
+                if (segundos >= 28 &&
+                    segundos < 28.2) {
+
+                    navigator
+                        .vibrate?.(300);
+
+                }
+
+            }, 100);
+
+        }
+
+        function stopCrono() {
+
+            clearInterval(
+                intervalo
+            );
+
+            evaluarShot();
+
+        }
+
+        function resetCrono() {
+
+            clearInterval(
+                intervalo
+            );
+
+            document.getElementById(
+                "cronometro"
+            ).innerHTML =
+                "00.0";
+
+            document.getElementById(
+                "progressBar"
+            ).style.width =
+                "0%";
+
+        }
+
+        function evaluarShot() {
+
+            const tiempo =
+                parseFloat(
+                    document.getElementById(
+                        "cronometro"
+                    ).innerHTML
+                );
+
+            let texto = "";
+
+            if (tiempo < 25) {
+
+                texto =
+                    "🟠 SUBEXTRACCIÓN";
+
+            }
+            else if (tiempo > 32) {
+
+                texto =
+                    "🔴 SOBREEXTRACCIÓN";
+
+            }
+            else {
+
+                texto =
+                    "🟢 PERFECTA";
+
+            }
+
+            document.getElementById(
+                "diagnostico"
+            ).innerHTML =
+                texto;
+
+        }
+
+        /* =======================
+           GUARDAR
+        ======================= */
+
+        function guardarShot() {
+
+            const tiempo =
+                parseFloat(
+                    document.getElementById(
+                        "cronometro"
+                    ).innerHTML
+                );
+
+            const dosis =
+                Number(
+                    document.getElementById(
+                        "dosis"
+                    ).value
+                );
+
+            const salida =
+                Number(
+                    document.getElementById(
+                        "salida"
+                    ).value
+                );
+
+            const ratio =
+                (salida / dosis)
+                    .toFixed(2);
+
+            shots.push({
+
+                id: Date.now(),
+
+                fecha:
+                    new Date()
+                        .toLocaleString(),
+
+                cafe:
+                    document.getElementById(
+                        "cafe"
+                    ).value,
+
+                dosis,
+                salida,
+
+                ratio,
+
+                tiempo,
+
+                temperatura:
+                    document.getElementById(
+                        "temperatura"
+                    ).value,
+
+                molienda:
+                    document.getElementById(
+                        "molienda"
+                    ).value
+
+            });
+
+            localStorage.setItem(
+
+                "espressoShots",
+
+                JSON.stringify(shots)
+
+            );
+
+            renderHistorial();
+
+            actualizarKPIs();
+
+            actualizarGrafico();
+
+        }
+
+        /* =======================
+           HISTORIAL
+        ======================= */
+
+        function renderHistorial() {
+
+            document.getElementById(
+                "historial"
+            ).innerHTML =
+
+                [...shots]
+
+                    .reverse()
+
+                    .map(s => `
+
+<div class="registro">
+
+<h3>
+☕ ${s.cafe || "Sin Café"}
+</h3>
+
+<p>
+⚖️ ${s.dosis} g
+</p>
+
+<p>
+☕ ${s.salida} g
+</p>
+
+<p>
+📊 1:${s.ratio}
+</p>
+
+<p>
+⏱️ ${s.tiempo}s
+</p>
+
+<p>
+🌡️ ${s.temperatura}°C
+</p>
+
+<p>
+⚙️ ${s.molienda}
+</p>
+
+<small>
+${s.fecha}
+</small>
+
+</div>
+
+`).join("");
+
+        }
+
+        /* =======================
+           KPI
+        ======================= */
+
+        function actualizarKPIs() {
+
+            document.getElementById(
+                "kpiTotal"
+            ).innerHTML =
+                shots.length;
+
+            if (shots.length === 0)
+                return;
+
+            let tiempos = 0;
+            let ratios = 0;
+            let perfectos = 0;
+
+            shots.forEach(s => {
+
+                tiempos += s.tiempo;
+
+                ratios +=
+                    parseFloat(
+                        s.ratio
+                    );
+
+                if (
+                    s.tiempo >= 25 &&
+                    s.tiempo <= 32
+                ) {
+                    perfectos++;
+                }
+
+            });
+
+            document.getElementById(
+                "kpiPromedio"
+            ).innerHTML =
+
+                (
+                    tiempos /
+                    shots.length
+                ).toFixed(1)
+                + "s";
+
+            document.getElementById(
+                "kpiRatio"
+            ).innerHTML =
+
+                "1:" +
+
+                (
+                    ratios /
+                    shots.length
+                ).toFixed(2);
+
+            document.getElementById(
+                "kpiPerfectos"
+            ).innerHTML =
+
+                Math.round(
+                    (perfectos / shots.length)
+                    * 100
+                )
+
+                + "%";
+
+        }
+
+        /* =======================
+           GRAFICO
+        ======================= */
+
+        function actualizarGrafico() {
+
+            const datos =
+                shots.map(
+                    s => s.tiempo
+                );
+
+            if (chart) {
+
+                chart.destroy();
+
+            }
+
+            chart =
+                new Chart(
+
+                    document.getElementById(
+                        "grafico"
+                    ),
+
+                    {
+
+                        type: "line",
+
+                        data: {
+
+                            labels:
+                                datos.map(
+                                    (_, i) => "#" + (i + 1)
+                                ),
+
+                            datasets: [{
+
+                                label:
+                                    "Tiempo Shot",
+
+                                data: datos,
+
+                                borderColor:
+                                    "#c58b45",
+
+                                tension: .3,
+
+                                fill: false
+
+                            }]
+
+                        }
+
+                    });
+
+        }
+
+        calcularObjetivo();
+        renderHistorial();
+        actualizarKPIs();
+        actualizarGrafico();
+
+    </script>
+
+</body>
+
+</html>
