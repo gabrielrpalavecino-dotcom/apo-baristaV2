@@ -4,6 +4,7 @@
 <head>
 
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Coffee Brew Lab</title>
@@ -14,57 +15,81 @@
 
     <meta name="theme-color" content="#c58b45">
 
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <meta name="apple-mobile-web-app-title" content="Coffee Brew Lab">
+
 </head>
 
 <body>
 
     <header class="header">
 
-        <div class="logo">☕</div>
+        <div class="logo">
+            ☕
+        </div>
 
         <h1 class="title">
             Coffee Brew Lab
         </h1>
 
         <div class="subtitle">
-            PWA para Baristas y Café de Especialidad
+            Suite Profesional para Café de Especialidad
         </div>
 
     </header>
 
-    <!-- KPI GENERALES -->
+    <!-- KPIs -->
 
     <section class="kpis">
 
         <div class="kpi">
 
-            <h2 id="kpiShots">0</h2>
+            <h2 id="kpiTotalPreparaciones">
+                0
+            </h2>
 
-            <p>Espressos</p>
-
-        </div>
-
-        <div class="kpi">
-
-            <h2 id="kpiV60">0</h2>
-
-            <p>V60</p>
+            <p>
+                Preparaciones
+            </p>
 
         </div>
 
         <div class="kpi">
 
-            <h2 id="kpiFrancesa">0</h2>
+            <h2 id="kpiCafes">
+                0
+            </h2>
 
-            <p>Francesa</p>
+            <p>
+                Cafés
+            </p>
 
         </div>
 
         <div class="kpi">
 
-            <h2 id="kpiMoka">0</h2>
+            <h2 id="kpiRecetas">
+                0
+            </h2>
 
-            <p>Moka</p>
+            <p>
+                Recetas
+            </p>
+
+        </div>
+
+        <div class="kpi">
+
+            <h2 id="kpiMetodoFavorito">
+                -
+            </h2>
+
+            <p>
+                Método Favorito
+            </p>
 
         </div>
 
@@ -72,159 +97,218 @@
 
     <!-- MÉTODOS -->
 
-    <h2>Métodos de Preparación</h2>
+    <section class="card">
 
-    <section class="dashboard">
+        <h2>
+            ☕ Métodos de Preparación
+        </h2>
 
-        <a href="espresso.html" class="brew-card">
+        <div class="dashboard">
 
-            <div class="icon">☕</div>
+            <a href="espresso.html" class="brew-card">
 
-            <h3>Espresso</h3>
+                <div class="icon">
+                    ☕
+                </div>
 
-            <p>
-                Calibración, ratio,
-                molienda y extracción.
-            </p>
+                <h3>
+                    Espresso
+                </h3>
 
-            <span class="badge">
-                Barista
-            </span>
+                <p>
+                    Calibración, ratio, molienda y extracción.
+                </p>
 
-        </a>
+                <span class="badge">
+                    Barista
+                </span>
 
-        <a href="v60.html" class="brew-card">
+            </a>
 
-            <div class="icon">💧</div>
+            <a href="v60.html" class="brew-card">
 
-            <h3>V60</h3>
+                <div class="icon">
+                    💧
+                </div>
 
-            <p>
-                Bloom guiado
-                y vertidos por etapas.
-            </p>
+                <h3>
+                    V60
+                </h3>
 
-            <span class="badge">
-                Pour Over
-            </span>
+                <p>
+                    Pour Over y control de vertidos.
+                </p>
 
-        </a>
+                <span class="badge">
+                    Filtro
+                </span>
 
-        <a href="francesa.html" class="brew-card">
+            </a>
 
-            <div class="icon">🇫🇷</div>
+            <a href="francesa.html" class="brew-card">
 
-            <h3>Prensa Francesa</h3>
+                <div class="icon">
+                    🇫🇷
+                </div>
 
-            <p>
-                Inmersión completa
-                y temporizador guiado.
-            </p>
+                <h3>
+                    Prensa Francesa
+                </h3>
 
-            <span class="badge">
-                French Press
-            </span>
+                <p>
+                    Inmersión completa.
+                </p>
 
-        </a>
+                <span class="badge">
+                    French Press
+                </span>
 
-        <a href="moka.html" class="brew-card">
+            </a>
 
-            <div class="icon">🇮🇹</div>
+            <a href="moka.html" class="brew-card">
 
-            <h3>Moka Italiana</h3>
+                <div class="icon">
+                    🇮🇹
+                </div>
 
-            <p>
-                Cafetera italiana
-                tradicional.
-            </p>
+                <h3>
+                    Moka Italiana
+                </h3>
 
-            <span class="badge">
-                Moka
-            </span>
+                <p>
+                    Cafetera tradicional italiana.
+                </p>
 
-        </a>
+                <span class="badge">
+                    Moka
+                </span>
 
-        <a href="aeropress.html" class="brew-card">
+            </a>
 
-            <div class="icon">🛢️</div>
+            <a href="aeropress.html" class="brew-card">
 
-            <h3>AeroPress</h3>
+                <div class="icon">
+                    🛢️
+                </div>
 
-            <p>
-                Método clásico,
-                invertido y WAC.
-            </p>
+                <h3>
+                    AeroPress
+                </h3>
 
-            <span class="badge">
-                AeroPress
-            </span>
+                <p>
+                    Clásico, Invertido y WAC.
+                </p>
 
-        </a>
+                <span class="badge">
+                    AeroPress
+                </span>
 
-        <a href="coldbrew.html" class="brew-card">
+            </a>
 
-            <div class="icon">❄️</div>
+            <a href="coldbrew.html" class="brew-card">
 
-            <h3>Cold Brew</h3>
+                <div class="icon">
+                    ❄️
+                </div>
 
-            <p>
-                Extracción lenta
-                en frío.
-            </p>
+                <h3>
+                    Cold Brew
+                </h3>
 
-            <span class="badge">
-                Cold Brew
-            </span>
+                <p>
+                    Extracción en frío.
+                </p>
 
-        </a>
+                <span class="badge">
+                    Cold Brew
+                </span>
+
+            </a>
+
+            <a href="bebidas.html" class="brew-card">
+
+                <div class="icon">
+                    🍵
+                </div>
+
+                <h3>
+                    Tea Bar
+                </h3>
+
+                <p>
+                    Matcha, Chai,
+                    Dirty Chai y bebidas especiales.
+                </p>
+
+                <span class="badge">
+                    Tea & Latte
+                </span>
+
+            </a>
+
+        </div>
 
     </section>
 
-    <!-- HERRAMIENTAS -->
+    <!-- GESTIÓN -->
 
-    <h2>Gestión</h2>
+    <section class="card">
 
-    <section class="quick-actions">
+        <h2>
+            📚 Gestión
+        </h2>
 
-        <a href="cafes.html" class="action">
+        <div class="quick-actions">
 
-            <div class="icon">
-                🌱
-            </div>
+            <a href="cafes.html" class="action">
 
-            <h3>Mis Cafés</h3>
+                <div class="icon">
+                    🌱
+                </div>
 
-        </a>
+                <h3>
+                    Cafés
+                </h3>
 
-        <a href="recetas.html" class="action">
+            </a>
 
-            <div class="icon">
-                📖
-            </div>
+            <a href="recetas.html" class="action">
 
-            <h3>Recetas</h3>
+                <div class="icon">
+                    📖
+                </div>
 
-        </a>
+                <h3>
+                    Recetas
+                </h3>
 
-        <a href="estadisticas.html" class="action">
+            </a>
 
-            <div class="icon">
-                📈
-            </div>
+            <a href="estadisticas.html" class="action">
 
-            <h3>Estadísticas</h3>
+                <div class="icon">
+                    📈
+                </div>
 
-        </a>
+                <h3>
+                    Estadísticas
+                </h3>
 
-        <a href="configuracion.html" class="action">
+            </a>
 
-            <div class="icon">
-                ⚙️
-            </div>
+            <a href="configuracion.html" class="action">
 
-            <h3>Configuración</h3>
+                <div class="icon">
+                    ⚙️
+                </div>
 
-        </a>
+                <h3>
+                    Configuración
+                </h3>
+
+            </a>
+
+        </div>
 
     </section>
 
@@ -232,13 +316,19 @@
 
     <section class="card">
 
-        <h2>Resumen General</h2>
+        <h2>
+            📊 Resumen General
+        </h2>
 
-        <p id="resumen">
+        <div id="resumen">
+
             Sin datos registrados.
-        </p>
+
+        </div>
 
     </section>
+
+    <!-- INSTALAR PWA -->
 
     <button id="installBtn" style="display:none;">
 
@@ -248,7 +338,11 @@
 
     <div class="footer">
 
-        Krusty WebApp - Coffee Brew Lab v2.0
+        Coffee Brew Lab v1.0
+
+        <br>
+
+        Espresso • V60 • Francesa • Moka • AeroPress • Cold Brew • Tea Bar
 
     </div>
 
@@ -257,7 +351,7 @@
     <script>
 
         /* ==========================
-           KPIS PANEL
+           CARGA DATOS
         ========================== */
 
         const espresso =
@@ -288,43 +382,126 @@
                 )
             ) || [];
 
-        document
-            .getElementById("kpiShots")
-            .innerText =
-            espresso.length;
+        const aeropress =
+            JSON.parse(
+                localStorage.getItem(
+                    "aeropressPreparaciones"
+                )
+            ) || [];
 
-        document
-            .getElementById("kpiV60")
-            .innerText =
-            v60.length;
+        const coldbrew =
+            JSON.parse(
+                localStorage.getItem(
+                    "coldbrewPreparaciones"
+                )
+            ) || [];
 
-        document
-            .getElementById("kpiFrancesa")
-            .innerText =
-            francesa.length;
+        const bebidas =
+            JSON.parse(
+                localStorage.getItem(
+                    "bebidasPreparaciones"
+                )
+            ) || [];
 
-        document
-            .getElementById("kpiMoka")
-            .innerText =
-            moka.length;
+        const cafes =
+            JSON.parse(
+                localStorage.getItem(
+                    "cafes"
+                )
+            ) || [];
 
-        const total =
+        const recetas =
+            JSON.parse(
+                localStorage.getItem(
+                    "recetas"
+                )
+            ) || [];
+
+        /* ==========================
+           KPI
+        ========================== */
+
+        const totalPreparaciones =
 
             espresso.length +
-
             v60.length +
-
             francesa.length +
+            moka.length +
+            aeropress.length +
+            coldbrew.length +
+            bebidas.length;
 
-            moka.length;
+        document.getElementById(
+            "kpiTotalPreparaciones"
+        ).innerHTML =
+            totalPreparaciones;
 
-        document
-            .getElementById("resumen")
-            .innerHTML =
+        document.getElementById(
+            "kpiCafes"
+        ).innerHTML =
+            cafes.length;
+
+        document.getElementById(
+            "kpiRecetas"
+        ).innerHTML =
+            recetas.length;
+
+        /* ==========================
+           MÉTODO FAVORITO
+        ========================== */
+
+        const metodos = {
+
+            "Espresso": espresso.length,
+            "V60": v60.length,
+            "Francesa": francesa.length,
+            "Moka": moka.length,
+            "AeroPress": aeropress.length,
+            "Cold Brew": coldbrew.length,
+            "Tea Bar": bebidas.length
+
+        };
+
+        let favorito = "-";
+        let cantidad = 0;
+
+        for (let metodo in metodos) {
+
+            if (
+                metodos[metodo] > cantidad
+            ) {
+
+                cantidad =
+                    metodos[metodo];
+
+                favorito =
+                    metodo;
+
+            }
+
+        }
+
+        document.getElementById(
+            "kpiMetodoFavorito"
+        ).innerHTML =
+            favorito;
+
+        /* ==========================
+           RESUMEN
+        ========================== */
+
+        document.getElementById(
+            "resumen"
+        ).innerHTML =
 
             `
-Preparaciones registradas:
-<strong>${total}</strong>
+<p>☕ Preparaciones registradas: <strong>${totalPreparaciones}</strong></p>
+
+<p>🌱 Cafés registrados: <strong>${cafes.length}</strong></p>
+
+<p>📖 Recetas guardadas: <strong>${recetas.length}</strong></p>
+
+<p>🏆 Método más utilizado: <strong>${favorito}</strong></p>
 `;
 
         /* ==========================
@@ -336,21 +513,23 @@ Preparaciones registradas:
         window.addEventListener(
             "beforeinstallprompt",
 
-            (event) => {
+            (e) => {
 
-                event.preventDefault();
+                e.preventDefault();
 
-                deferredPrompt = event;
+                deferredPrompt = e;
 
-                document
-                    .getElementById("installBtn")
-                    .style.display = "block";
+                document.getElementById(
+                    "installBtn"
+                ).style.display = "block";
 
             }
         );
 
         document
-            .getElementById("installBtn")
+            .getElementById(
+                "installBtn"
+            )
             .addEventListener(
 
                 "click",
@@ -371,21 +550,17 @@ Preparaciones registradas:
         ========================== */
 
         if (
-            "serviceWorker"
-            in navigator
+            "serviceWorker" in navigator
         ) {
 
             window.addEventListener(
-
                 "load",
 
                 () => {
 
-                    navigator
-                        .serviceWorker
-                        .register(
-                            "./service-worker.js"
-                        );
+                    navigator.serviceWorker.register(
+                        "./service-worker.js"
+                    );
 
                 });
 
