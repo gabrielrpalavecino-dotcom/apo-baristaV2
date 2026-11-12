@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>⚙️ Configuración</title>
+
+    <link rel="stylesheet" href="app.css">
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <a href="index.html">
+            ← Inicio
+        </a>
+
+        <h1>⚙️ Configuración</h1>
+
+    </header>
+
+    <!-- ESPRESSO -->
+
+    <section class="card">
+
+        <h2>☕ Espresso</h2>
+
+        <label>
+            Tiempo objetivo (segundos)
+        </label>
+
+        <input type="number" id="objetivoEspresso" value="28">
+
+        <label>
+            Ratio por defecto
+        </label>
+
+        <input type="text" id="ratioDefault" value="1:2">
+
+    </section>
+
+    <!-- EXPERIENCIA -->
+
+    <section class="card">
+
+        <h2>📱 Experiencia</h2>
+
+        <label>
+
+            <input type="checkbox" id="sonido">
+
+            Sonido al objetivo
+
+        </label>
+
+        <br><br>
+
+        <label>
+
+            <input type="checkbox" id="vibracion">
+
+            Vibración
+
+        </label>
+
+        <br><br>
+
+        <label>
+
+            <input type="checkbox" id="animaciones">
+
+            Animaciones
+
+        </label>
+
+    </section>
+
+    <!-- APARIENCIA -->
+
+    <section class="card">
+
+        <h2>🎨 Apariencia</h2>
+
+        <select id="tema">
+
+            <option value="oscuro">
+                Oscuro
+            </option>
+
+            <option value="claro">
+                Claro
+            </option>
+
+            <option value="barista">
+                Barista Dorado
+            </option>
+
+        </select>
+
+    </section>
+
+    <!-- BACKUP -->
+
+    <section class="card">
+
+        <h2>💾 Copia de Seguridad</h2>
+
+        <button onclick="exportarDatos()">
+
+            📤 Exportar JSON
+
+        </button>
+
+        <br><br>
+
+        <input type="file" id="importFile">
+
+        <br><br>
+
+        <button onclick="importarDatos()">
+
+            📥 Importar JSON
+
+        </button>
+
+    </section>
+
+    <!-- MANTENIMIENTO -->
+
+    <section class="card">
+
+        <h2>🛠️ Mantenimiento</h2>
+
+        <button onclick="limpiarRecetas()">
+
+            🗑️ Borrar Recetas
+
+        </button>
+
+        <br><br>
+
+        <button onclick="limpiarPreparaciones()">
+
+            ☕ Borrar Extracciones
+
+        </button>
+
+        <br><br>
+
+        <button onclick="resetCompleto()">
+
+            💥 Reinicio Total
+
+        </button>
+
+    </section>
+
+    <!-- INFO -->
+
+    <section class="card">
+
+        <h2>ℹ️ Información</h2>
+
+        <p>
+            Coffee Brew Lab
+        </p>
+
+        <p>
+            Versión: 1.0
+        </p>
+
+        <p>
+            PWA instalable
+        </p>
+
+        <p id="espacioUsado">
+            Calculando...
+        </p>
+
+    </section>
+
+    <button onclick="guardarConfiguracion()">
+
+        💾 Guardar Configuración
+
+    </button>
+
+    <script>
+
+        const config =
+
+            JSON.parse(
+                localStorage.getItem("config")
+            )
+
+            ||
+
+            {
+
+                objetivoEspresso: 28,
+                ratioDefault: "1:2",
+
+                sonido: true,
+                vibracion: true,
+                animaciones: true,
+
+                tema: "oscuro"
+
+            };
+
+        cargarConfiguracion();
+
+        function cargarConfiguracion() {
+
+            document.getElementById(
+                "objetivoEspresso"
+            ).value =
+                config.objetivoEspresso;
+
+            document.getElementById(
+                "ratioDefault"
+            ).value =
+                config.ratioDefault;
+
+            document.getElementById(
+                "sonido"
+            ).checked =
+                config.sonido;
+
+            document.getElementById(
+                "vibracion"
+            ).checked =
+                config.vibracion;
+
+            document.getElementById(
+                "animaciones"
+            ).checked =
+                config.animaciones;
+
+            document.getElementById(
+                "tema"
+            ).value =
+                config.tema;
+
+            mostrarEspacio();
+
+        }
+
+        function guardarConfiguracion() {
+
+            const nueva = {
+
+                objetivoEspresso:
+
+                    document.getElementById(
+                        "objetivoEspresso"
+                    ).value,
+
+                ratioDefault:
+
+                    document.getElementById(
+                        "ratioDefault"
+                    ).value,
+
+                sonido:
+
+                    document.getElementById(
+                        "sonido"
+                    ).checked,
+
+                vibracion:
+
+                    document.getElementById(
+                        "vibracion"
+                    ).checked,
+
+                animaciones:
+
+                    document.getElementById(
+                        "animaciones"
+                    ).checked,
+
+                tema:
+
+                    document.getElementById(
+                        "tema"
+                    ).value
+
+            };
+
+            localStorage.setItem(
+                "config",
+                JSON.stringify(nueva)
+            );
+
+            alert(
+                "✅ Configuración guardada"
+            );
+
+        }
+
+        function exportarDatos() {
+
+            const backup = {
+
+                cafes:
+                    JSON.parse(localStorage.getItem("cafes")) || [],
+
+                recetas:
+                    JSON.parse(localStorage.getItem("recetas")) || [],
+
+                espresso:
+                    JSON.parse(localStorage.getItem("espressoShots")) || [],
+
+                v60:
+                    JSON.parse(localStorage.getItem("v60Preparaciones")) || [],
+
+                francesa:
+                    JSON.parse(localStorage.getItem("francesaPreparaciones")) || [],
+
+                moka:
+                    JSON.parse(localStorage.getItem("mokaPreparaciones")) || [],
+
+                aeropress:
+                    JSON.parse(localStorage.getItem("aeropressPreparaciones")) || [],
+
+                coldbrew:
+                    JSON.parse(localStorage.getItem("coldbrewPreparaciones")) || []
+
+            };
+
+            const blob =
+                new Blob(
+
+                    [JSON.stringify(
+                        backup,
+                        null,
+                        2
+                    )],
+
+                    {
+                        type: "application/json"
+                    }
+
+                );
+
+            const enlace =
+                document.createElement("a");
+
+            enlace.href =
+                URL.createObjectURL(blob);
+
+            enlace.download =
+                "coffee-brew-backup.json";
+
+            enlace.click();
+
+        }
+
+        function importarDatos() {
+
+            const archivo =
+
+                document.getElementById(
+                    "importFile"
+                ).files[0];
+
+            if (!archivo) {
+
+                alert(
+                    "Selecciona un archivo"
+                );
+
+                return;
+
+            }
+
+            const lector =
+                new FileReader();
+
+            lector.onload = e => {
+
+                const datos =
+
+                    JSON.parse(
+                        e.target.result
+                    );
+
+                Object.keys(datos)
+                    .forEach(key => {
+
+                        localStorage.setItem(
+                            key,
+                            JSON.stringify(datos[key])
+                        );
+
+                    });
+
+                alert(
+                    "✅ Datos restaurados"
+                );
+
+            };
+
+            lector.readAsText(
+                archivo
+            );
+
+        }
+
+        function limpiarRecetas() {
+
+            if (
+                !confirm(
+                    "¿Eliminar todas las recetas?"
+                )
+            ) return;
+
+            localStorage.removeItem(
+                "recetas"
+            );
+
+            alert(
+                "✅ Recetas eliminadas"
+            );
+
+        }
+
+        function limpiarPreparaciones() {
+
+            localStorage.removeItem(
+                "espressoShots"
+            );
+
+            localStorage.removeItem(
+                "v60Preparaciones"
+            );
+
+            localStorage.removeItem(
+                "francesaPreparaciones"
+            );
+
+            localStorage.removeItem(
+                "mokaPreparaciones"
+            );
+
+            localStorage.removeItem(
+                "aeropressPreparaciones"
+            );
+
+            localStorage.removeItem(
+                "coldbrewPreparaciones"
+            );
+
+            alert(
+                "✅ Preparaciones eliminadas"
+            );
+
+        }
+
+        function resetCompleto() {
+
+            if (
+                !confirm(
+                    "Esto borrará TODA la aplicación"
+                )
+            ) return;
+
+            localStorage.clear();
+
+            location.reload();
+
+        }
+
+        function mostrarEspacio() {
+
+            let total = 0;
+
+            for (let key in localStorage) {
+
+                if (localStorage.hasOwnProperty(key)) {
+
+                    total +=
+
+                        localStorage[key]
+                            .length;
+
+                }
+
+            }
+
+            document.getElementById(
+                "espacioUsado"
+            ).innerHTML =
+
+                "Almacenamiento: " +
+
+                (total / 1024)
+                    .toFixed(2)
+
+                + " KB";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
