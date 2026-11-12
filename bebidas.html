@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>🍵 Tea Bar | Coffee Brew Lab</title>
+
+    <link rel="stylesheet" href="app.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <a href="index.html">
+            ← Inicio
+        </a>
+
+        <h1>🍵 Tea Bar</h1>
+
+    </header>
+
+    <!-- KPI -->
+
+    <section class="kpis">
+
+        <div class="kpi">
+
+            <h2 id="kpiTotal">0</h2>
+
+            <p>Preparaciones</p>
+
+        </div>
+
+        <div class="kpi">
+
+            <h2 id="kpiTemp">0°C</h2>
+
+            <p>Temp. Media</p>
+
+        </div>
+
+        <div class="kpi">
+
+            <h2 id="kpiLeche">0ml</h2>
+
+            <p>Leche Media</p>
+
+        </div>
+
+        <div class="kpi">
+
+            <h2 id="kpiFavorita">-</h2>
+
+            <p>Más Popular</p>
+
+        </div>
+
+    </section>
+
+    <!-- FORMULARIO -->
+
+    <section class="card">
+
+        <h2>Nueva Bebida</h2>
+
+        <select id="tipoBebida" onchange="actualizarReceta()">
+
+            <option>
+                Matcha Tradicional
+            </option>
+
+            <option>
+                Matcha Latte
+            </option>
+
+            <option>
+                Iced Matcha Latte
+            </option>
+
+            <option>
+                Matcha Fresa
+            </option>
+
+            <option>
+                Matcha Chocolate
+            </option>
+
+            <option>
+                Chai Latte
+            </option>
+
+            <option>
+                Iced Chai Latte
+            </option>
+
+            <option>
+                Dirty Chai
+            </option>
+
+        </select>
+
+        <input type="number" id="base" placeholder="Base (g/ml)">
+
+        <input type="number" id="agua" placeholder="Agua (ml)">
+
+        <input type="number" id="leche" placeholder="Leche (ml)">
+
+        <input type="number" id="espresso" placeholder="Espresso (ml)">
+
+        <input type="number" id="temperatura" placeholder="Temperatura °C" oninput="evaluarBebida()">
+
+    </section>
+
+    <!-- DIAGNOSTICO -->
+
+    <section class="card">
+
+        <h2>Diagnóstico</h2>
+
+        <div id="diagnostico" style="
+font-size:24px;
+font-weight:bold;
+text-align:center;">
+
+            🟢 Correcto
+
+        </div>
+
+    </section>
+
+    <!-- RECETA -->
+
+    <section class="card">
+
+        <h2>Receta Recomendada</h2>
+
+        <div id="infoReceta">
+
+            Selecciona una bebida
+
+        </div>
+
+    </section>
+
+    <!-- NOTAS -->
+
+    <section class="card">
+
+        <h2>Notas</h2>
+
+        <textarea id="notas" placeholder="Dulce, especiado, vegetal, cremoso...">
+</textarea>
+
+    </section>
+
+    <!-- GUARDAR -->
+
+    <section class="card">
+
+        <button onclick="guardarBebida()">
+
+            💾 Guardar
+
+        </button>
+
+    </section>
+
+    <!-- GRAFICO -->
+
+    <section class="card">
+
+        <h2>📈 Temperaturas</h2>
+
+        <canvas id="grafico"></canvas>
+
+    </section>
+
+    <!-- HISTORIAL -->
+
+    <section class="card">
+
+        <h2>📋 Historial</h2>
+
+        <div id="historial">
+        </div>
+
+    </section>
+
+    <script>
+
+        const bebidas =
+            JSON.parse(
+                localStorage.getItem(
+                    "bebidasPreparaciones"
+                )
+            ) || [];
+
+        let chart;
+
+        /* =====================
+           RECETAS
+        ===================== */
+
+        function actualizarReceta() {
+
+            const bebida =
+                document.getElementById(
+                    "tipoBebida"
+                ).value;
+
+            const base =
+                document.getElementById(
+                    "base"
+                );
+
+            const agua =
+                document.getElementById(
+                    "agua"
+                );
+
+            const leche =
+                document.getElementById(
+                    "leche"
+                );
+
+            const espresso =
+                document.getElementById(
+                    "espresso"
+                );
+
+            const temperatura =
+                document.getElementById(
+                    "temperatura"
+                );
+
+            const info =
+                document.getElementById(
+                    "infoReceta"
+                );
+
+            switch (bebida) {
+
+                case "Matcha Tradicional":
+
+                    base.value = 2;
+                    agua.value = 60;
+                    leche.value = 0;
+                    espresso.value = 0;
+                    temperatura.value = 75;
+
+                    info.innerHTML =
+                        `
+🍵 2g Matcha<br>
+💧 60ml Agua<br>
+🌡️ 75°C
+`;
+
+                    break;
+
+                case "Matcha Latte":
+
+                    base.value = 2;
+                    agua.value = 60;
+                    leche.value = 200;
+                    espresso.value = 0;
+                    temperatura.value = 75;
+
+                    info.innerHTML =
+                        `
+🍵 2g Matcha<br>
+🥛 200ml Leche
+`;
+
+                    break;
+
+                case "Iced Matcha Latte":
+
+                    base.value = 2;
+                    agua.value = 60;
+                    leche.value = 220;
+                    espresso.value = 0;
+                    temperatura.value = 5;
+
+                    info.innerHTML =
+                        `
+🧊 Matcha frío
+`;
+
+                    break;
+
+                case "Matcha Fresa":
+
+                    base.value = 2;
+                    agua.value = 60;
+                    leche.value = 180;
+                    espresso.value = 0;
+                    temperatura.value = 70;
+
+                    info.innerHTML =
+                        `
+🍓 Matcha Fresa
+`;
+
+                    break;
+
+                case "Matcha Chocolate":
+
+                    base.value = 2;
+                    agua.value = 60;
+                    leche.value = 180;
+                    espresso.value = 0;
+                    temperatura.value = 70;
+
+                    info.innerHTML =
+                        `
+🍫 Matcha Chocolate
+`;
+
+                    break;
+
+                case "Chai Latte":
+
+                    base.value = 60;
+                    agua.value = 0;
+                    leche.value = 180;
+                    espresso.value = 0;
+                    temperatura.value = 70;
+
+                    info.innerHTML =
+                        `
+☕ Chai Latte
+`;
+
+                    break;
+
+                case "Iced Chai Latte":
+
+                    base.value = 60;
+                    agua.value = 0;
+                    leche.value = 220;
+                    espresso.value = 0;
+                    temperatura.value = 5;
+
+                    info.innerHTML =
+                        `
+🧊 Iced Chai
+`;
+
+                    break;
+
+                case "Dirty Chai":
+
+                    base.value = 60;
+                    agua.value = 0;
+                    leche.value = 180;
+                    espresso.value = 30;
+                    temperatura.value = 70;
+
+                    info.innerHTML =
+                        `
+⚡ Dirty Chai
+<br>
+30ml Espresso
+`;
+
+                    break;
+
+            }
+
+            evaluarBebida();
+
+        }
+
+        /* =====================
+           DIAGNOSTICO
+        ===================== */
+
+        function evaluarBebida() {
+
+            const bebida =
+                document.getElementById(
+                    "tipoBebida"
+                ).value;
+
+            const temp =
+                Number(
+                    document.getElementById(
+                        "temperatura"
+                    ).value
+                );
+
+            let resultado = "";
+
+            if (
+                bebida.includes("Iced")
+            ) {
+
+                resultado =
+                    "🧊 Preparación fría";
+
+            }
+
+            else {
+
+                if (temp < 60) {
+
+                    resultado =
+                        "🟠 Temperatura baja";
+
+                }
+                else if (temp <= 80) {
+
+                    resultado =
+                        "🟢 Correcto";
+
+                }
+                else {
+
+                    resultado =
+                        "🔴 Demasiado caliente";
+
+                }
+
+            }
+
+            document.getElementById(
+                "diagnostico"
+            ).innerHTML =
+                resultado;
+
+        }
+
+        /* =====================
+           GUARDAR
+        ===================== */
+
+        function guardarBebida() {
+
+            bebidas.push({
+
+                id: Date.now(),
+
+                fecha:
+                    new Date()
+                        .toLocaleString(),
+
+                tipo:
+                    document.getElementById(
+                        "tipoBebida"
+                    ).value,
+
+                base:
+                    document.getElementById(
+                        "base"
+                    ).value,
+
+                agua:
+                    document.getElementById(
+                        "agua"
+                    ).value,
+
+                leche:
+                    document.getElementById(
+                        "leche"
+                    ).value,
+
+                espresso:
+                    document.getElementById(
+                        "espresso"
+                    ).value,
+
+                temperatura:
+                    document.getElementById(
+                        "temperatura"
+                    ).value,
+
+                diagnostico:
+                    document.getElementById(
+                        "diagnostico"
+                    ).innerText,
+
+                notas:
+                    document.getElementById(
+                        "notas"
+                    ).value
+
+            });
+
+            localStorage.setItem(
+
+                "bebidasPreparaciones",
+
+                JSON.stringify(
+                    bebidas
+                )
+
+            );
+
+            renderHistorial();
+            actualizarKPIs();
+            actualizarGrafico();
+
+            alert(
+                "✅ Bebida guardada"
+            );
+
+        }
+
+        /* =====================
+           HISTORIAL
+        ===================== */
+
+        function renderHistorial() {
+
+            document.getElementById(
+                "historial"
+            ).innerHTML =
+
+                [...bebidas]
+                    .reverse()
+                    .map(b => `
+
+<div class="registro">
+
+<h3>
+${b.tipo}
+</h3>
+
+<p>Base: ${b.base}</p>
+
+<p>💧 ${b.agua} ml</p>
+
+<p>🥛 ${b.leche} ml</p>
+
+<p>⚡ ${b.espresso} ml</p>
+
+<p>🌡️ ${b.temperatura}°C</p>
+
+<p>${b.diagnostico}</p>
+
+<p>📝 ${b.notas || "-"}</p>
+
+<small>${b.fecha}</small>
+
+</div>
+
+`).join("");
+
+        }
+
+        /* =====================
+           KPI
+        ===================== */
+
+        function actualizarKPIs() {
+
+            document.getElementById(
+                "kpiTotal"
+            ).innerHTML =
+                bebidas.length;
+
+            if (!bebidas.length)
+                return;
+
+            let temp = 0;
+            let leche = 0;
+
+            const tipos = {};
+
+            bebidas.forEach(b => {
+
+                temp += Number(
+                    b.temperatura
+                );
+
+                leche += Number(
+                    b.leche
+                );
+
+                tipos[b.tipo] =
+                    (tipos[b.tipo] || 0) + 1;
+
+            });
+
+            document.getElementById(
+                "kpiTemp"
+            ).innerHTML =
+
+                (
+                    temp / bebidas.length
+                ).toFixed(0)
+                + "°C";
+
+            document.getElementById(
+                "kpiLeche"
+            ).innerHTML =
+
+                (
+                    leche / bebidas.length
+                ).toFixed(0)
+                + "ml";
+
+            let favorita = "-";
+            let cantidad = 0;
+
+            for (let tipo in tipos) {
+
+                if (tipos[tipo] > cantidad) {
+
+                    cantidad = tipos[tipo];
+                    favorita = tipo;
+
+                }
+
+            }
+
+            document.getElementById(
+                "kpiFavorita"
+            ).innerHTML =
+                favorita;
+
+        }
+
+        /* =====================
+           GRAFICO
+        ===================== */
+
+        function actualizarGrafico() {
+
+            const datos =
+                bebidas.map(
+                    b => Number(
+                        b.temperatura
+                    )
+                );
+
+            if (chart) {
+
+                chart.destroy();
+
+            }
+
+            chart =
+                new Chart(
+
+                    document.getElementById(
+                        "grafico"
+                    ),
+
+                    {
+
+                        type: "line",
+
+                        data: {
+
+                            labels:
+                                datos.map(
+                                    (_, i) => "#" + (i + 1)
+                                ),
+
+                            datasets: [{
+
+                                label: "Temperatura",
+
+                                data: datos,
+
+                                borderColor: "#22c55e",
+
+                                tension: .3,
+
+                                fill: false
+
+                            }]
+
+                        }
+
+                    });
+
+        }
+
+        actualizarReceta();
+        renderHistorial();
+        actualizarKPIs();
+        actualizarGrafico();
+
+    </script>
+
+</body>
+
+</html>
